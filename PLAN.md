@@ -427,7 +427,91 @@ git commit -m "feat: add 100-word speedwriting dictionary"
 
 ---
 
-### Task 8: Test - DictionaryService loads dictionary
+### Task 8: Set up GitHub Actions for automated testing
+
+**Files:** Creates `.github/workflows/test.yml`
+
+**Step 1: Create GitHub Actions workflow directory**
+
+```bash
+mkdir -p .github/workflows
+```
+
+**Step 2: Create test workflow file**
+
+Create `.github/workflows/test.yml`:
+
+```yaml
+name: Run Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests
+      run: npm test
+
+    - name: Upload coverage (if applicable)
+      if: matrix.node-version == '20.x'
+      uses: codecov/codecov-action@v3
+      continue-on-error: true
+```
+
+**Step 3: Verify workflow file**
+
+```bash
+cat .github/workflows/test.yml
+```
+
+Expected: Workflow file contents display correctly
+
+**Step 4: Commit GitHub Actions workflow**
+
+```bash
+git add .github/workflows/test.yml
+git commit -m "ci: add GitHub Actions workflow for automated testing"
+```
+
+**Step 5: Push to remote**
+
+```bash
+git push
+```
+
+Expected: Changes pushed successfully. GitHub Actions will run on this push (may show "no tests found" initially, which is expected).
+
+**Step 6: Verify workflow runs on GitHub**
+
+Visit: `https://github.com/josephradford/spwrite-app/actions`
+
+Expected: See "Run Tests" workflow in the actions list. Initial run may fail with "no tests found" - this is expected and will pass once tests are added.
+
+---
+
+### Task 9: Test - DictionaryService loads dictionary
 
 **Files:**
 - Create: `__tests__/services/DictionaryService.test.js`
@@ -490,7 +574,7 @@ git commit -m "feat: DictionaryService loads dictionary data"
 
 ---
 
-### Task 9: Test - DictionaryService counts words
+### Task 10: Test - DictionaryService counts words
 
 **Files:**
 - Modify: `__tests__/services/DictionaryService.test.js`
@@ -543,7 +627,7 @@ git commit -m "feat: add getWordCount to DictionaryService"
 
 ---
 
-### Task 10: Test - DictionaryService translates English to speedwriting
+### Task 11: Test - DictionaryService translates English to speedwriting
 
 **Files:**
 - Modify: `__tests__/services/DictionaryService.test.js`
@@ -607,7 +691,7 @@ git commit -m "feat: add translateToSpeedwriting to DictionaryService"
 
 ---
 
-### Task 11: Test - DictionaryService builds reverse index
+### Task 12: Test - DictionaryService builds reverse index
 
 **Files:**
 - Modify: `__tests__/services/DictionaryService.test.js`
@@ -676,7 +760,7 @@ git commit -m "feat: add reverse index to DictionaryService"
 
 ---
 
-### Task 12: Test - DictionaryService translates speedwriting to English
+### Task 13: Test - DictionaryService translates speedwriting to English
 
 **Files:**
 - Modify: `__tests__/services/DictionaryService.test.js`
@@ -740,7 +824,7 @@ git commit -m "feat: add translateToEnglish to DictionaryService"
 
 ---
 
-### Task 13: Test - TranslationService translates empty input
+### Task 14: Test - TranslationService translates empty input
 
 **Files:**
 - Create: `__tests__/services/TranslationService.test.js`
@@ -810,7 +894,7 @@ git commit -m "feat: TranslationService handles empty input"
 
 ---
 
-### Task 14: Test - TranslationService translates single word to speedwriting
+### Task 15: Test - TranslationService translates single word to speedwriting
 
 **Files:**
 - Modify: `__tests__/services/TranslationService.test.js`
@@ -883,7 +967,7 @@ git commit -m "feat: TranslationService translates single word to speedwriting"
 
 ---
 
-### Task 15: Test - TranslationService translates phrase to speedwriting
+### Task 16: Test - TranslationService translates phrase to speedwriting
 
 **Files:**
 - Modify: `__tests__/services/TranslationService.test.js`
@@ -945,7 +1029,7 @@ git commit -m "feat: TranslationService translates phrases to speedwriting"
 
 ---
 
-### Task 16: Test - TranslationService translates to English
+### Task 17: Test - TranslationService translates to English
 
 **Files:**
 - Modify: `__tests__/services/TranslationService.test.js`
@@ -1013,7 +1097,7 @@ git commit -m "feat: TranslationService translates to English"
 
 ---
 
-### Task 17: Test - TranslationService preserves punctuation
+### Task 18: Test - TranslationService preserves punctuation
 
 **Files:**
 - Modify: `__tests__/services/TranslationService.test.js`
@@ -1098,7 +1182,7 @@ git commit -m "feat: TranslationService preserves punctuation"
 
 ## Phase 2: UI Components (TDD)
 
-### Task 18: Test - DirectionToggle renders correct text
+### Task 19: Test - DirectionToggle renders correct text
 
 **Files:**
 - Create: `__tests__/components/DirectionToggle.test.js`
@@ -1195,7 +1279,7 @@ git commit -m "feat: add DirectionToggle component"
 
 ---
 
-### Task 19: Test - DirectionToggle calls onToggle
+### Task 20: Test - DirectionToggle calls onToggle
 
 **Files:**
 - Modify: `__tests__/components/DirectionToggle.test.js`
@@ -1247,7 +1331,7 @@ git commit -m "test: add DirectionToggle onToggle callback test"
 
 ---
 
-### Task 20: Test - TranslationInput renders with placeholder
+### Task 21: Test - TranslationInput renders with placeholder
 
 **Files:**
 - Create: `__tests__/components/TranslationInput.test.js`
@@ -1370,7 +1454,7 @@ git commit -m "feat: add TranslationInput component"
 
 ---
 
-### Task 21: Test - TranslationInput shows clear button when has text
+### Task 22: Test - TranslationInput shows clear button when has text
 
 **Files:**
 - Modify: `__tests__/components/TranslationInput.test.js`
@@ -1451,7 +1535,7 @@ git commit -m "test: add TranslationInput clear button tests"
 
 ---
 
-### Task 22: Test - TranslationOutput displays text
+### Task 23: Test - TranslationOutput displays text
 
 **Files:**
 - Create: `__tests__/components/TranslationOutput.test.js`
@@ -1545,7 +1629,7 @@ git commit -m "feat: add TranslationOutput component"
 
 ---
 
-### Task 23: Create TranslatorScreen
+### Task 24: Create TranslatorScreen
 
 **Files:**
 - Create: `src/screens/TranslatorScreen.js`
@@ -1681,7 +1765,7 @@ git commit -m "feat: add TranslatorScreen with integrated components"
 
 ---
 
-### Task 24: Update App.js to use TranslatorScreen
+### Task 25: Update App.js to use TranslatorScreen
 
 **Files:**
 - Modify: `App.js`
@@ -1714,7 +1798,7 @@ git commit -m "feat: update App.js to render TranslatorScreen"
 
 ---
 
-### Task 25: Verify MVP works on device
+### Task 26: Verify MVP works on device
 
 **Files:** N/A
 
