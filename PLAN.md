@@ -174,9 +174,127 @@ git commit -m "feat: create project directory structure"
 
 ---
 
+### Task 6: Set up GitHub Flow workflow
+
+**Files:** Creates `.github/WORKFLOW.md`
+
+**Step 1: Verify current branch is main**
+
+```bash
+git branch --show-current
+```
+
+Expected: `main`
+
+**Step 2: Create GitHub Flow workflow documentation**
+
+Create `.github/WORKFLOW.md`:
+
+```markdown
+# GitHub Flow Workflow
+
+This project follows [GitHub Flow](https://guides.github.com/introduction/flow/) for development.
+
+## The Workflow
+
+1. **Branch from main** - Create a feature branch from main
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b feature/your-feature-name
+   ```
+
+2. **Make changes** - Commit regularly with descriptive messages
+   ```bash
+   git add .
+   git commit -m "feat: description of change"
+   ```
+
+3. **Push to remote** - Share your work
+   ```bash
+   git push -u origin feature/your-feature-name
+   ```
+
+4. **Open Pull Request** - Start discussion and review
+   ```bash
+   gh pr create --title "Feature: Description" --body "Details..."
+   ```
+
+5. **Review and discuss** - Collaborate on the PR
+   - Address review feedback
+   - Push additional commits to the same branch
+
+6. **Merge to main** - When approved and tests pass
+   ```bash
+   gh pr merge --squash
+   ```
+
+7. **Delete feature branch** - Clean up
+   ```bash
+   git branch -d feature/your-feature-name
+   git push origin --delete feature/your-feature-name
+   ```
+
+## Branch Naming
+
+- `feature/description` - New features
+- `fix/description` - Bug fixes
+- `docs/description` - Documentation changes
+- `refactor/description` - Code refactoring
+- `test/description` - Test additions/changes
+
+## Commit Message Format
+
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `test:` - Test changes
+- `refactor:` - Code refactoring
+- `chore:` - Maintenance tasks
+
+## Branch Protection (Optional)
+
+For team projects, set up branch protection in GitHub:
+1. Go to Settings > Branches
+2. Add rule for `main` branch
+3. Enable: Require pull request reviews before merging
+4. Enable: Require status checks to pass
+5. Enable: Require branches to be up to date
+
+For solo projects, this is optional but good practice.
+```
+
+**Step 3: Verify file created**
+
+```bash
+cat .github/WORKFLOW.md
+```
+
+Expected: File contents display correctly
+
+**Step 4: Commit workflow documentation**
+
+```bash
+mkdir -p .github
+git add .github/WORKFLOW.md
+git commit -m "docs: add GitHub Flow workflow documentation"
+```
+
+**Step 5: Push to remote**
+
+```bash
+git push
+```
+
+Expected: Changes pushed to `main` successfully
+
+---
+
 ## Phase 1: Data Layer (TDD)
 
-### Task 6: Create Dictionary JSON
+### Task 7: Create Dictionary JSON
 
 **Files:**
 - Create: `data/dictionary.json`
@@ -309,7 +427,7 @@ git commit -m "feat: add 100-word speedwriting dictionary"
 
 ---
 
-### Task 7: Test - DictionaryService loads dictionary
+### Task 8: Test - DictionaryService loads dictionary
 
 **Files:**
 - Create: `__tests__/services/DictionaryService.test.js`
@@ -372,7 +490,7 @@ git commit -m "feat: DictionaryService loads dictionary data"
 
 ---
 
-### Task 8: Test - DictionaryService counts words
+### Task 9: Test - DictionaryService counts words
 
 **Files:**
 - Modify: `__tests__/services/DictionaryService.test.js`
@@ -425,7 +543,7 @@ git commit -m "feat: add getWordCount to DictionaryService"
 
 ---
 
-### Task 9: Test - DictionaryService translates English to speedwriting
+### Task 10: Test - DictionaryService translates English to speedwriting
 
 **Files:**
 - Modify: `__tests__/services/DictionaryService.test.js`
@@ -489,7 +607,7 @@ git commit -m "feat: add translateToSpeedwriting to DictionaryService"
 
 ---
 
-### Task 10: Test - DictionaryService builds reverse index
+### Task 11: Test - DictionaryService builds reverse index
 
 **Files:**
 - Modify: `__tests__/services/DictionaryService.test.js`
@@ -558,7 +676,7 @@ git commit -m "feat: add reverse index to DictionaryService"
 
 ---
 
-### Task 11: Test - DictionaryService translates speedwriting to English
+### Task 12: Test - DictionaryService translates speedwriting to English
 
 **Files:**
 - Modify: `__tests__/services/DictionaryService.test.js`
@@ -622,7 +740,7 @@ git commit -m "feat: add translateToEnglish to DictionaryService"
 
 ---
 
-### Task 12: Test - TranslationService translates empty input
+### Task 13: Test - TranslationService translates empty input
 
 **Files:**
 - Create: `__tests__/services/TranslationService.test.js`
@@ -692,7 +810,7 @@ git commit -m "feat: TranslationService handles empty input"
 
 ---
 
-### Task 13: Test - TranslationService translates single word to speedwriting
+### Task 14: Test - TranslationService translates single word to speedwriting
 
 **Files:**
 - Modify: `__tests__/services/TranslationService.test.js`
@@ -765,7 +883,7 @@ git commit -m "feat: TranslationService translates single word to speedwriting"
 
 ---
 
-### Task 14: Test - TranslationService translates phrase to speedwriting
+### Task 15: Test - TranslationService translates phrase to speedwriting
 
 **Files:**
 - Modify: `__tests__/services/TranslationService.test.js`
@@ -827,7 +945,7 @@ git commit -m "feat: TranslationService translates phrases to speedwriting"
 
 ---
 
-### Task 15: Test - TranslationService translates to English
+### Task 16: Test - TranslationService translates to English
 
 **Files:**
 - Modify: `__tests__/services/TranslationService.test.js`
@@ -895,7 +1013,7 @@ git commit -m "feat: TranslationService translates to English"
 
 ---
 
-### Task 16: Test - TranslationService preserves punctuation
+### Task 17: Test - TranslationService preserves punctuation
 
 **Files:**
 - Modify: `__tests__/services/TranslationService.test.js`
@@ -980,7 +1098,7 @@ git commit -m "feat: TranslationService preserves punctuation"
 
 ## Phase 2: UI Components (TDD)
 
-### Task 17: Test - DirectionToggle renders correct text
+### Task 18: Test - DirectionToggle renders correct text
 
 **Files:**
 - Create: `__tests__/components/DirectionToggle.test.js`
@@ -1077,7 +1195,7 @@ git commit -m "feat: add DirectionToggle component"
 
 ---
 
-### Task 18: Test - DirectionToggle calls onToggle
+### Task 19: Test - DirectionToggle calls onToggle
 
 **Files:**
 - Modify: `__tests__/components/DirectionToggle.test.js`
@@ -1129,7 +1247,7 @@ git commit -m "test: add DirectionToggle onToggle callback test"
 
 ---
 
-### Task 19: Test - TranslationInput renders with placeholder
+### Task 20: Test - TranslationInput renders with placeholder
 
 **Files:**
 - Create: `__tests__/components/TranslationInput.test.js`
@@ -1252,7 +1370,7 @@ git commit -m "feat: add TranslationInput component"
 
 ---
 
-### Task 20: Test - TranslationInput shows clear button when has text
+### Task 21: Test - TranslationInput shows clear button when has text
 
 **Files:**
 - Modify: `__tests__/components/TranslationInput.test.js`
@@ -1333,7 +1451,7 @@ git commit -m "test: add TranslationInput clear button tests"
 
 ---
 
-### Task 21: Test - TranslationOutput displays text
+### Task 22: Test - TranslationOutput displays text
 
 **Files:**
 - Create: `__tests__/components/TranslationOutput.test.js`
@@ -1427,7 +1545,7 @@ git commit -m "feat: add TranslationOutput component"
 
 ---
 
-### Task 22: Create TranslatorScreen
+### Task 23: Create TranslatorScreen
 
 **Files:**
 - Create: `src/screens/TranslatorScreen.js`
@@ -1563,7 +1681,7 @@ git commit -m "feat: add TranslatorScreen with integrated components"
 
 ---
 
-### Task 23: Update App.js to use TranslatorScreen
+### Task 24: Update App.js to use TranslatorScreen
 
 **Files:**
 - Modify: `App.js`
@@ -1596,7 +1714,7 @@ git commit -m "feat: update App.js to render TranslatorScreen"
 
 ---
 
-### Task 24: Verify MVP works on device
+### Task 25: Verify MVP works on device
 
 **Files:** N/A
 
