@@ -1,88 +1,192 @@
 # SPWrite MVP Implementation Plan
 
+> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+
 **Goal:** Build a mobile translator app for Dearborn speedwriting system using React Native + Expo
 
-**Timeline:** 4 weeks (MVP demo-ready by early January 2026)
+**Architecture:** Data-driven translation engine with dictionary JSON, service layer for lookups, and React Native UI components. Tests verify behavior at each layer.
 
-**Current Status:** Research & Design complete. Ready to implement.
+**Tech Stack:** React Native 0.81.5, Expo 54, Jest with React Native Testing Library
 
 ---
 
-## Phase 0: Project Setup (Week 1 - Days 1-2)
+## Phase 0: Project Setup
 
-### Task 1: Verify Prerequisites (2 min)
-**File:** N/A (command line)
-**Action:**
+### Task 1: Verify Node and npm
+
+**Files:** N/A
+
+**Step 1: Check Node version**
+
 ```bash
-node --version  # Should be v16+
-npm --version   # Should be 8+
+node --version
 ```
-**Verification:** Both commands return version numbers without errors
 
-### Task 2: Install Expo CLI (2 min)
-**File:** N/A (command line)
-**Action:**
+Expected: v16 or higher (e.g., `v18.19.0`)
+
+**Step 2: Check npm version**
+
 ```bash
-npm install -g expo-cli
-expo --version
+npm --version
 ```
-**Verification:** Expo CLI version displays
 
-### Task 3: Initialize Expo Project (3 min)
-**File:** N/A (creates project structure)
-**Action:**
+Expected: v8 or higher (e.g., `9.2.0`)
+
+**Step 3: Verify both commands succeeded**
+
+If either fails, install Node.js from https://nodejs.org
+
+---
+
+### Task 2: Initialize Expo Project
+
+**Files:** Creates project structure
+
+**Step 1: Initialize Expo project in current directory**
+
 ```bash
-cd /Users/joeradford/dev/spwrite-app
 npx create-expo-app@latest . --template blank
 ```
-**Verification:**
-- `package.json` created
-- `App.js` created
-- `node_modules/` exists
 
-### Task 4: Test Initial App (3 min)
-**File:** N/A (command line)
-**Action:**
+Expected: Creates `package.json`, `App.js`, `app.json`, `index.js`, `node_modules/`
+
+**Step 2: Verify key files exist**
+
 ```bash
-npx expo start
+ls package.json App.js app.json index.js
 ```
-**Verification:**
-- QR code appears in terminal
-- Can scan with Expo Go app on iPhone
-- "Open up App.js to start working..." displays on phone
 
-### Task 5: Install Additional Dependencies (2 min)
-**File:** N/A (command line)
-**Action:**
+Expected: All files listed without error
+
+**Step 3: Commit initial Expo setup**
+
+```bash
+git add .
+git commit -m "feat: initialize Expo project with blank template"
+```
+
+---
+
+### Task 3: Install Test Dependencies
+
+**Files:** Modifies `package.json`
+
+**Step 1: Install Jest and React Native Testing Library**
+
+```bash
+npm install --save-dev jest jest-expo @testing-library/react-native @testing-library/jest-native
+```
+
+Expected: Dependencies added to `devDependencies` in `package.json`
+
+**Step 2: Add Jest configuration to package.json**
+
+Add this to `package.json`:
+
+```json
+"jest": {
+  "preset": "jest-expo",
+  "transformIgnorePatterns": [
+    "node_modules/(?!((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg))"
+  ]
+}
+```
+
+**Step 3: Add test script to package.json**
+
+Add to `"scripts"` section:
+
+```json
+"test": "jest"
+```
+
+**Step 4: Verify test setup**
+
+```bash
+npm test
+```
+
+Expected: "No tests found" (setup works, just no tests yet)
+
+**Step 5: Commit test configuration**
+
+```bash
+git add package.json package-lock.json
+git commit -m "feat: add Jest and React Native Testing Library"
+```
+
+---
+
+### Task 4: Install App Dependencies
+
+**Files:** Modifies `package.json`
+
+**Step 1: Install AsyncStorage and Clipboard**
+
 ```bash
 npm install @react-native-async-storage/async-storage
 npx expo install expo-clipboard
 ```
-**Verification:** Dependencies added to `package.json`
+
+Expected: Dependencies added to `dependencies` in `package.json`
+
+**Step 2: Verify installation**
+
+```bash
+npm list @react-native-async-storage/async-storage expo-clipboard
+```
+
+Expected: Both packages listed with versions
+
+**Step 3: Commit dependencies**
+
+```bash
+git add package.json package-lock.json
+git commit -m "feat: add AsyncStorage and Clipboard dependencies"
+```
 
 ---
 
-## Phase 1: Data Layer (Week 1 - Days 2-3)
+### Task 5: Create Project Directory Structure
 
-### Task 6: Create Project Structure (2 min)
-**Files:** Directory structure
-**Action:**
+**Files:** Creates directories
+
+**Step 1: Create directory structure**
+
 ```bash
-mkdir -p data
-mkdir -p src/services
-mkdir -p src/components
-mkdir -p src/screens
+mkdir -p data src/services src/components src/screens __tests__/services __tests__/components
 ```
-**Verification:** All directories exist via `ls -R src/`
 
-### Task 7: Create Dictionary JSON (5 min)
-**File:** `/Users/joeradford/dev/spwrite-app/data/dictionary.json`
-**Action:** Create JSON file with initial 100 words from RESEARCH.md
-**Code:**
+**Step 2: Verify directories exist**
+
+```bash
+ls -d data src/services src/components src/screens __tests__/services __tests__/components
+```
+
+Expected: All directories listed
+
+**Step 3: Commit directory structure**
+
+```bash
+git add data src __tests__
+git commit -m "feat: create project directory structure"
+```
+
+---
+
+## Phase 1: Data Layer (TDD)
+
+### Task 6: Create Dictionary JSON
+
+**Files:**
+- Create: `data/dictionary.json`
+
+**Step 1: Create dictionary.json with 100 words**
+
 ```json
 {
   "version": "1.0.0",
-  "lastUpdated": "2025-12-10",
+  "lastUpdated": "2025-12-11",
   "words": {
     "I": "I",
     "you": "u",
@@ -187,16 +291,241 @@ mkdir -p src/screens
   }
 }
 ```
-**Verification:** JSON is valid (no syntax errors when loaded)
 
-### Task 8: Create DictionaryService (5 min)
-**File:** `/Users/joeradford/dev/spwrite-app/src/services/DictionaryService.js`
-**Action:** Implement dictionary loading and lookup logic
-**Code:**
+**Step 2: Verify JSON is valid**
+
+```bash
+node -e "JSON.parse(require('fs').readFileSync('data/dictionary.json', 'utf8'))"
+```
+
+Expected: No output (success)
+
+**Step 3: Commit dictionary**
+
+```bash
+git add data/dictionary.json
+git commit -m "feat: add 100-word speedwriting dictionary"
+```
+
+---
+
+### Task 7: Test - DictionaryService loads dictionary
+
+**Files:**
+- Create: `__tests__/services/DictionaryService.test.js`
+
+**Step 1: Write failing test for loading dictionary**
+
+```javascript
+import dictionaryService from '../../src/services/DictionaryService';
+
+describe('DictionaryService', () => {
+  describe('initialization', () => {
+    test('loads dictionary data on construction', () => {
+      expect(dictionaryService.data).toBeDefined();
+      expect(dictionaryService.data.version).toBe('1.0.0');
+    });
+  });
+});
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- DictionaryService.test.js
+```
+
+Expected: FAIL with "Cannot find module '../../src/services/DictionaryService'"
+
+**Step 3: Write minimal implementation**
+
+Create `src/services/DictionaryService.js`:
+
 ```javascript
 import dictionaryData from '../../data/dictionary.json';
 
 class DictionaryService {
+  constructor() {
+    this.data = dictionaryData;
+  }
+}
+
+const dictionaryService = new DictionaryService();
+
+export default dictionaryService;
+```
+
+**Step 4: Run test to verify it passes**
+
+```bash
+npm test -- DictionaryService.test.js
+```
+
+Expected: PASS (1 test)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/services/DictionaryService.test.js src/services/DictionaryService.js
+git commit -m "feat: DictionaryService loads dictionary data"
+```
+
+---
+
+### Task 8: Test - DictionaryService counts words
+
+**Files:**
+- Modify: `__tests__/services/DictionaryService.test.js`
+- Modify: `src/services/DictionaryService.js`
+
+**Step 1: Write failing test for getWordCount**
+
+Add to `__tests__/services/DictionaryService.test.js`:
+
+```javascript
+  describe('getWordCount', () => {
+    test('returns number of words in dictionary', () => {
+      expect(dictionaryService.getWordCount()).toBe(87);
+    });
+  });
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- DictionaryService.test.js
+```
+
+Expected: FAIL with "dictionaryService.getWordCount is not a function"
+
+**Step 3: Write minimal implementation**
+
+Add to `src/services/DictionaryService.js` (inside class):
+
+```javascript
+  getWordCount() {
+    return Object.keys(this.data.words).length;
+  }
+```
+
+**Step 4: Run test to verify it passes**
+
+```bash
+npm test -- DictionaryService.test.js
+```
+
+Expected: PASS (2 tests)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/services/DictionaryService.test.js src/services/DictionaryService.js
+git commit -m "feat: add getWordCount to DictionaryService"
+```
+
+---
+
+### Task 9: Test - DictionaryService translates English to speedwriting
+
+**Files:**
+- Modify: `__tests__/services/DictionaryService.test.js`
+- Modify: `src/services/DictionaryService.js`
+
+**Step 1: Write failing test for translateToSpeedwriting**
+
+Add to `__tests__/services/DictionaryService.test.js`:
+
+```javascript
+  describe('translateToSpeedwriting', () => {
+    test('translates known English word to speedwriting', () => {
+      expect(dictionaryService.translateToSpeedwriting('happy')).toBe('hpy');
+      expect(dictionaryService.translateToSpeedwriting('sad')).toBe('sd');
+    });
+
+    test('returns unknown word unchanged', () => {
+      expect(dictionaryService.translateToSpeedwriting('unknown')).toBe('unknown');
+    });
+
+    test('handles case-insensitive lookup', () => {
+      expect(dictionaryService.translateToSpeedwriting('Happy')).toBe('hpy');
+      expect(dictionaryService.translateToSpeedwriting('HAPPY')).toBe('hpy');
+    });
+  });
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- DictionaryService.test.js
+```
+
+Expected: FAIL with "dictionaryService.translateToSpeedwriting is not a function"
+
+**Step 3: Write minimal implementation**
+
+Add to `src/services/DictionaryService.js`:
+
+```javascript
+  translateToSpeedwriting(englishWord) {
+    const word = englishWord.toLowerCase();
+    return this.data.words[word] || englishWord;
+  }
+```
+
+**Step 4: Run test to verify it passes**
+
+```bash
+npm test -- DictionaryService.test.js
+```
+
+Expected: PASS (5 tests)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/services/DictionaryService.test.js src/services/DictionaryService.js
+git commit -m "feat: add translateToSpeedwriting to DictionaryService"
+```
+
+---
+
+### Task 10: Test - DictionaryService builds reverse index
+
+**Files:**
+- Modify: `__tests__/services/DictionaryService.test.js`
+- Modify: `src/services/DictionaryService.js`
+
+**Step 1: Write failing test for reverse index**
+
+Add to `__tests__/services/DictionaryService.test.js`:
+
+```javascript
+  describe('buildReverseIndex', () => {
+    test('creates reverse index on construction', () => {
+      expect(dictionaryService.reverseIndex).toBeDefined();
+      expect(typeof dictionaryService.reverseIndex).toBe('object');
+    });
+
+    test('reverse index maps speedwriting to English', () => {
+      expect(dictionaryService.reverseIndex['hpy']).toBe('happy');
+      expect(dictionaryService.reverseIndex['sd']).toBe('sad');
+    });
+  });
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- DictionaryService.test.js
+```
+
+Expected: FAIL with "Cannot read property 'hpy' of undefined"
+
+**Step 3: Write minimal implementation**
+
+Update `src/services/DictionaryService.js`:
+
+```javascript
   constructor() {
     this.data = dictionaryData;
     this.reverseIndex = this.buildReverseIndex();
@@ -206,58 +535,197 @@ class DictionaryService {
     const reverse = {};
     for (let [english, speedwriting] of Object.entries(this.data.words)) {
       const key = speedwriting.toLowerCase();
-      // Handle potential duplicates (ambiguous speedwriting)
-      if (reverse[key]) {
-        // Store as array if multiple English words map to same speedwriting
-        if (Array.isArray(reverse[key])) {
-          reverse[key].push(english);
-        } else {
-          reverse[key] = [reverse[key], english];
-        }
-      } else {
-        reverse[key] = english;
-      }
+      reverse[key] = english;
     }
     return reverse;
   }
+```
 
-  translateToSpeedwriting(englishWord) {
-    const word = englishWord.toLowerCase();
-    return this.data.words[word] || englishWord;
-  }
+**Step 4: Run test to verify it passes**
 
+```bash
+npm test -- DictionaryService.test.js
+```
+
+Expected: PASS (7 tests)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/services/DictionaryService.test.js src/services/DictionaryService.js
+git commit -m "feat: add reverse index to DictionaryService"
+```
+
+---
+
+### Task 11: Test - DictionaryService translates speedwriting to English
+
+**Files:**
+- Modify: `__tests__/services/DictionaryService.test.js`
+- Modify: `src/services/DictionaryService.js`
+
+**Step 1: Write failing test for translateToEnglish**
+
+Add to `__tests__/services/DictionaryService.test.js`:
+
+```javascript
+  describe('translateToEnglish', () => {
+    test('translates known speedwriting to English', () => {
+      expect(dictionaryService.translateToEnglish('hpy')).toBe('happy');
+      expect(dictionaryService.translateToEnglish('sd')).toBe('sad');
+    });
+
+    test('returns unknown speedwriting unchanged', () => {
+      expect(dictionaryService.translateToEnglish('xyz')).toBe('xyz');
+    });
+
+    test('handles case-insensitive lookup', () => {
+      expect(dictionaryService.translateToEnglish('HPY')).toBe('happy');
+      expect(dictionaryService.translateToEnglish('Hpy')).toBe('happy');
+    });
+  });
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- DictionaryService.test.js
+```
+
+Expected: FAIL with "dictionaryService.translateToEnglish is not a function"
+
+**Step 3: Write minimal implementation**
+
+Add to `src/services/DictionaryService.js`:
+
+```javascript
   translateToEnglish(speedwritingWord) {
     const word = speedwritingWord.toLowerCase();
-    const result = this.reverseIndex[word];
+    return this.reverseIndex[word] || speedwritingWord;
+  }
+```
 
-    if (!result) {
-      return speedwritingWord;
+**Step 4: Run test to verify it passes**
+
+```bash
+npm test -- DictionaryService.test.js
+```
+
+Expected: PASS (10 tests)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/services/DictionaryService.test.js src/services/DictionaryService.js
+git commit -m "feat: add translateToEnglish to DictionaryService"
+```
+
+---
+
+### Task 12: Test - TranslationService translates empty input
+
+**Files:**
+- Create: `__tests__/services/TranslationService.test.js`
+- Create: `src/services/TranslationService.js`
+
+**Step 1: Write failing test for empty input**
+
+```javascript
+import translationService from '../../src/services/TranslationService';
+
+describe('TranslationService', () => {
+  describe('translatePhrase', () => {
+    test('returns empty string for empty input', () => {
+      expect(translationService.translatePhrase('', 'to-speedwriting')).toBe('');
+      expect(translationService.translatePhrase('', 'to-english')).toBe('');
+    });
+
+    test('returns empty string for whitespace-only input', () => {
+      expect(translationService.translatePhrase('   ', 'to-speedwriting')).toBe('');
+      expect(translationService.translatePhrase('  \t  ', 'to-english')).toBe('');
+    });
+  });
+});
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- TranslationService.test.js
+```
+
+Expected: FAIL with "Cannot find module '../../src/services/TranslationService'"
+
+**Step 3: Write minimal implementation**
+
+Create `src/services/TranslationService.js`:
+
+```javascript
+class TranslationService {
+  translatePhrase(input, direction) {
+    if (!input || input.trim() === '') {
+      return '';
     }
-
-    // If ambiguous (multiple options), return first one for MVP
-    return Array.isArray(result) ? result[0] : result;
-  }
-
-  getWordCount() {
-    return Object.keys(this.data.words).length;
-  }
-
-  getVersion() {
-    return this.data.version;
+    return input;
   }
 }
 
-// Singleton instance
-const dictionaryService = new DictionaryService();
+const translationService = new TranslationService();
 
-export default dictionaryService;
+export default translationService;
 ```
-**Verification:** Import in test file and call `getWordCount()` - should return 100
 
-### Task 9: Create TranslationService (4 min)
-**File:** `/Users/joeradford/dev/spwrite-app/src/services/TranslationService.js`
-**Action:** Implement phrase translation logic
-**Code:**
+**Step 4: Run test to verify it passes**
+
+```bash
+npm test -- TranslationService.test.js
+```
+
+Expected: PASS (2 tests)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/services/TranslationService.test.js src/services/TranslationService.js
+git commit -m "feat: TranslationService handles empty input"
+```
+
+---
+
+### Task 13: Test - TranslationService translates single word to speedwriting
+
+**Files:**
+- Modify: `__tests__/services/TranslationService.test.js`
+- Modify: `src/services/TranslationService.js`
+
+**Step 1: Write failing test for single word translation**
+
+Add to `__tests__/services/TranslationService.test.js`:
+
+```javascript
+  describe('to-speedwriting direction', () => {
+    test('translates single word', () => {
+      expect(translationService.translatePhrase('happy', 'to-speedwriting')).toBe('hpy');
+    });
+
+    test('translates unknown word unchanged', () => {
+      expect(translationService.translatePhrase('unknown', 'to-speedwriting')).toBe('unknown');
+    });
+  });
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- TranslationService.test.js
+```
+
+Expected: FAIL - Expected 'hpy', received 'happy'
+
+**Step 3: Write minimal implementation**
+
+Update `src/services/TranslationService.js`:
+
 ```javascript
 import dictionaryService from './DictionaryService';
 
@@ -267,8 +735,213 @@ class TranslationService {
       return '';
     }
 
-    // Split by whitespace while preserving punctuation attached to words
-    const words = input.split(/\s+/);
+    if (direction === 'to-speedwriting') {
+      return dictionaryService.translateToSpeedwriting(input);
+    }
+
+    return input;
+  }
+}
+
+const translationService = new TranslationService();
+
+export default translationService;
+```
+
+**Step 4: Run test to verify it passes**
+
+```bash
+npm test -- TranslationService.test.js
+```
+
+Expected: PASS (4 tests)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/services/TranslationService.test.js src/services/TranslationService.js
+git commit -m "feat: TranslationService translates single word to speedwriting"
+```
+
+---
+
+### Task 14: Test - TranslationService translates phrase to speedwriting
+
+**Files:**
+- Modify: `__tests__/services/TranslationService.test.js`
+- Modify: `src/services/TranslationService.js`
+
+**Step 1: Write failing test for phrase translation**
+
+Add to `__tests__/services/TranslationService.test.js` in 'to-speedwriting direction':
+
+```javascript
+    test('translates multi-word phrase', () => {
+      expect(translationService.translatePhrase('I feel happy', 'to-speedwriting')).toBe('I fel hpy');
+      expect(translationService.translatePhrase('I feel happy today', 'to-speedwriting')).toBe('I fel hpy 2dy');
+    });
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- TranslationService.test.js
+```
+
+Expected: FAIL - phrase not split into words
+
+**Step 3: Write minimal implementation**
+
+Update `src/services/TranslationService.js`:
+
+```javascript
+  translatePhrase(input, direction) {
+    if (!input || input.trim() === '') {
+      return '';
+    }
+
+    const words = input.split(/\s+/).filter(word => word.length > 0);
+
+    if (direction === 'to-speedwriting') {
+      return words.map(word => dictionaryService.translateToSpeedwriting(word)).join(' ');
+    }
+
+    return input;
+  }
+```
+
+**Step 4: Run test to verify it passes**
+
+```bash
+npm test -- TranslationService.test.js
+```
+
+Expected: PASS (5 tests)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/services/TranslationService.test.js src/services/TranslationService.js
+git commit -m "feat: TranslationService translates phrases to speedwriting"
+```
+
+---
+
+### Task 15: Test - TranslationService translates to English
+
+**Files:**
+- Modify: `__tests__/services/TranslationService.test.js`
+- Modify: `src/services/TranslationService.js`
+
+**Step 1: Write failing test for English translation**
+
+Add to `__tests__/services/TranslationService.test.js`:
+
+```javascript
+  describe('to-english direction', () => {
+    test('translates single speedwriting word to English', () => {
+      expect(translationService.translatePhrase('hpy', 'to-english')).toBe('happy');
+    });
+
+    test('translates speedwriting phrase to English', () => {
+      expect(translationService.translatePhrase('I fel hpy', 'to-english')).toBe('I feel happy');
+      expect(translationService.translatePhrase('I fel hpy 2dy', 'to-english')).toBe('I feel happy today');
+    });
+  });
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- TranslationService.test.js
+```
+
+Expected: FAIL - to-english direction not implemented
+
+**Step 3: Write minimal implementation**
+
+Update `src/services/TranslationService.js`:
+
+```javascript
+  translatePhrase(input, direction) {
+    if (!input || input.trim() === '') {
+      return '';
+    }
+
+    const words = input.split(/\s+/).filter(word => word.length > 0);
+
+    const translateFn = direction === 'to-speedwriting'
+      ? (word) => dictionaryService.translateToSpeedwriting(word)
+      : (word) => dictionaryService.translateToEnglish(word);
+
+    return words.map(translateFn).join(' ');
+  }
+```
+
+**Step 4: Run test to verify it passes**
+
+```bash
+npm test -- TranslationService.test.js
+```
+
+Expected: PASS (7 tests)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/services/TranslationService.test.js src/services/TranslationService.js
+git commit -m "feat: TranslationService translates to English"
+```
+
+---
+
+### Task 16: Test - TranslationService preserves punctuation
+
+**Files:**
+- Modify: `__tests__/services/TranslationService.test.js`
+- Modify: `src/services/TranslationService.js`
+
+**Step 1: Write failing test for punctuation preservation**
+
+Add to `__tests__/services/TranslationService.test.js`:
+
+```javascript
+  describe('punctuation handling', () => {
+    test('preserves trailing punctuation', () => {
+      expect(translationService.translatePhrase('happy!', 'to-speedwriting')).toBe('hpy!');
+      expect(translationService.translatePhrase('happy?', 'to-speedwriting')).toBe('hpy?');
+      expect(translationService.translatePhrase('happy.', 'to-speedwriting')).toBe('hpy.');
+    });
+
+    test('preserves leading punctuation', () => {
+      expect(translationService.translatePhrase('(happy)', 'to-speedwriting')).toBe('(hpy)');
+    });
+
+    test('preserves punctuation in phrases', () => {
+      expect(translationService.translatePhrase('I feel happy!', 'to-speedwriting')).toBe('I fel hpy!');
+    });
+  });
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- TranslationService.test.js
+```
+
+Expected: FAIL - punctuation not preserved
+
+**Step 3: Write minimal implementation**
+
+Update `src/services/TranslationService.js`:
+
+```javascript
+  translatePhrase(input, direction) {
+    if (!input || input.trim() === '') {
+      return '';
+    }
+
+    const words = input.split(/\s+/).filter(word => word.length > 0);
 
     const translateFn = direction === 'to-speedwriting'
       ? (word) => dictionaryService.translateToSpeedwriting(word)
@@ -286,30 +959,69 @@ class TranslationService {
 
     return translatedWords.join(' ');
   }
-
-  translateToSpeedwriting(input) {
-    return this.translatePhrase(input, 'to-speedwriting');
-  }
-
-  translateToEnglish(input) {
-    return this.translatePhrase(input, 'to-english');
-  }
-}
-
-const translationService = new TranslationService();
-
-export default translationService;
 ```
-**Verification:** Test with "I feel happy" → should return "I fel hpy"
+
+**Step 4: Run test to verify it passes**
+
+```bash
+npm test -- TranslationService.test.js
+```
+
+Expected: PASS (10 tests)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/services/TranslationService.test.js src/services/TranslationService.js
+git commit -m "feat: TranslationService preserves punctuation"
+```
 
 ---
 
-## Phase 2: UI Components (Week 2)
+## Phase 2: UI Components (TDD)
 
-### Task 10: Create DirectionToggle Component (5 min)
-**File:** `/Users/joeradford/dev/spwrite-app/src/components/DirectionToggle.js`
-**Action:** Build toggle for translation direction
-**Code:**
+### Task 17: Test - DirectionToggle renders correct text
+
+**Files:**
+- Create: `__tests__/components/DirectionToggle.test.js`
+- Create: `src/components/DirectionToggle.js`
+
+**Step 1: Write failing test for DirectionToggle**
+
+```javascript
+import React from 'react';
+import { render } from '@testing-library/react-native';
+import DirectionToggle from '../../src/components/DirectionToggle';
+
+describe('DirectionToggle', () => {
+  test('renders "English → Speedwriting" when direction is to-speedwriting', () => {
+    const { getByText } = render(
+      <DirectionToggle direction="to-speedwriting" onToggle={() => {}} />
+    );
+    expect(getByText('English → Speedwriting')).toBeTruthy();
+  });
+
+  test('renders "Speedwriting → English" when direction is to-english', () => {
+    const { getByText } = render(
+      <DirectionToggle direction="to-english" onToggle={() => {}} />
+    );
+    expect(getByText('Speedwriting → English')).toBeTruthy();
+  });
+});
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- DirectionToggle.test.js
+```
+
+Expected: FAIL with "Cannot find module '../../src/components/DirectionToggle'"
+
+**Step 3: Write minimal implementation**
+
+Create `src/components/DirectionToggle.js`:
+
 ```javascript
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
@@ -347,12 +1059,128 @@ const styles = StyleSheet.create({
   },
 });
 ```
-**Verification:** Component renders with text and icon
 
-### Task 11: Create TranslationInput Component (5 min)
-**File:** `/Users/joeradford/dev/spwrite-app/src/components/TranslationInput.js`
-**Action:** Build input field with clear button
-**Code:**
+**Step 4: Run test to verify it passes**
+
+```bash
+npm test -- DirectionToggle.test.js
+```
+
+Expected: PASS (2 tests)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/components/DirectionToggle.test.js src/components/DirectionToggle.js
+git commit -m "feat: add DirectionToggle component"
+```
+
+---
+
+### Task 18: Test - DirectionToggle calls onToggle
+
+**Files:**
+- Modify: `__tests__/components/DirectionToggle.test.js`
+
+**Step 1: Write failing test for onToggle callback**
+
+Add to `__tests__/components/DirectionToggle.test.js`:
+
+```javascript
+import { render, fireEvent } from '@testing-library/react-native';
+
+  test('calls onToggle when pressed', () => {
+    const mockToggle = jest.fn();
+    const { getByText } = render(
+      <DirectionToggle direction="to-speedwriting" onToggle={mockToggle} />
+    );
+
+    fireEvent.press(getByText('English → Speedwriting'));
+    expect(mockToggle).toHaveBeenCalledTimes(1);
+  });
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- DirectionToggle.test.js
+```
+
+Expected: FAIL (if Pressable not wired correctly)
+
+**Step 3: Verify implementation already passes**
+
+The implementation already has `onPress={onToggle}` so this should pass.
+
+**Step 4: Run test to verify it passes**
+
+```bash
+npm test -- DirectionToggle.test.js
+```
+
+Expected: PASS (3 tests)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/components/DirectionToggle.test.js
+git commit -m "test: add DirectionToggle onToggle callback test"
+```
+
+---
+
+### Task 19: Test - TranslationInput renders with placeholder
+
+**Files:**
+- Create: `__tests__/components/TranslationInput.test.js`
+- Create: `src/components/TranslationInput.js`
+
+**Step 1: Write failing test for TranslationInput**
+
+```javascript
+import React from 'react';
+import { render } from '@testing-library/react-native';
+import TranslationInput from '../../src/components/TranslationInput';
+
+describe('TranslationInput', () => {
+  test('renders TextInput with placeholder', () => {
+    const { getByPlaceholderText } = render(
+      <TranslationInput
+        value=""
+        onChangeText={() => {}}
+        placeholder="Type here..."
+        onClear={() => {}}
+      />
+    );
+    expect(getByPlaceholderText('Type here...')).toBeTruthy();
+  });
+
+  test('displays current value', () => {
+    const { getByDisplayValue } = render(
+      <TranslationInput
+        value="test input"
+        onChangeText={() => {}}
+        placeholder="Type here..."
+        onClear={() => {}}
+      />
+    );
+    expect(getByDisplayValue('test input')).toBeTruthy();
+  });
+});
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- TranslationInput.test.js
+```
+
+Expected: FAIL with "Cannot find module '../../src/components/TranslationInput'"
+
+**Step 3: Write minimal implementation**
+
+Create `src/components/TranslationInput.js`:
+
 ```javascript
 import React from 'react';
 import { View, TextInput, Pressable, Text, StyleSheet } from 'react-native';
@@ -406,25 +1234,153 @@ const styles = StyleSheet.create({
   },
 });
 ```
-**Verification:** Can type in field, clear button appears/works
 
-### Task 12: Create TranslationOutput Component (5 min)
-**File:** `/Users/joeradford/dev/spwrite-app/src/components/TranslationOutput.js`
-**Action:** Build read-only output field with copy button
-**Code:**
+**Step 4: Run test to verify it passes**
+
+```bash
+npm test -- TranslationInput.test.js
+```
+
+Expected: PASS (2 tests)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/components/TranslationInput.test.js src/components/TranslationInput.js
+git commit -m "feat: add TranslationInput component"
+```
+
+---
+
+### Task 20: Test - TranslationInput shows clear button when has text
+
+**Files:**
+- Modify: `__tests__/components/TranslationInput.test.js`
+
+**Step 1: Write failing test for clear button visibility**
+
+Add to `__tests__/components/TranslationInput.test.js`:
+
+```javascript
+import { render, fireEvent } from '@testing-library/react-native';
+
+  test('shows clear button when value is not empty', () => {
+    const { getByText } = render(
+      <TranslationInput
+        value="test"
+        onChangeText={() => {}}
+        placeholder="Type here..."
+        onClear={() => {}}
+      />
+    );
+    expect(getByText('×')).toBeTruthy();
+  });
+
+  test('hides clear button when value is empty', () => {
+    const { queryByText } = render(
+      <TranslationInput
+        value=""
+        onChangeText={() => {}}
+        placeholder="Type here..."
+        onClear={() => {}}
+      />
+    );
+    expect(queryByText('×')).toBeNull();
+  });
+
+  test('calls onClear when clear button pressed', () => {
+    const mockClear = jest.fn();
+    const { getByText } = render(
+      <TranslationInput
+        value="test"
+        onChangeText={() => {}}
+        placeholder="Type here..."
+        onClear={mockClear}
+      />
+    );
+
+    fireEvent.press(getByText('×'));
+    expect(mockClear).toHaveBeenCalledTimes(1);
+  });
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- TranslationInput.test.js
+```
+
+Expected: May already pass since implementation exists
+
+**Step 3: Verify implementation passes**
+
+The implementation already has conditional clear button rendering.
+
+**Step 4: Run test to verify it passes**
+
+```bash
+npm test -- TranslationInput.test.js
+```
+
+Expected: PASS (5 tests)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/components/TranslationInput.test.js
+git commit -m "test: add TranslationInput clear button tests"
+```
+
+---
+
+### Task 21: Test - TranslationOutput displays text
+
+**Files:**
+- Create: `__tests__/components/TranslationOutput.test.js`
+- Create: `src/components/TranslationOutput.js`
+
+**Step 1: Write failing test for TranslationOutput**
+
 ```javascript
 import React from 'react';
-import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
-import * as Clipboard from 'expo-clipboard';
+import { render } from '@testing-library/react-native';
+import TranslationOutput from '../../src/components/TranslationOutput';
+
+describe('TranslationOutput', () => {
+  test('displays provided value', () => {
+    const { getByText } = render(<TranslationOutput value="translated text" />);
+    expect(getByText('translated text')).toBeTruthy();
+  });
+
+  test('displays placeholder when value is empty', () => {
+    const { getByText } = render(<TranslationOutput value="" />);
+    expect(getByText('Translation appears here')).toBeTruthy();
+  });
+
+  test('displays placeholder when value is null', () => {
+    const { getByText } = render(<TranslationOutput value={null} />);
+    expect(getByText('Translation appears here')).toBeTruthy();
+  });
+});
+```
+
+**Step 2: Run test to verify it fails**
+
+```bash
+npm test -- TranslationOutput.test.js
+```
+
+Expected: FAIL with "Cannot find module '../../src/components/TranslationOutput'"
+
+**Step 3: Write minimal implementation**
+
+Create `src/components/TranslationOutput.js`:
+
+```javascript
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
 export default function TranslationOutput({ value }) {
-  const handleCopy = async () => {
-    if (value) {
-      await Clipboard.setStringAsync(value);
-      Alert.alert('Copied!', 'Translation copied to clipboard');
-    }
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.output}>
@@ -432,11 +1388,6 @@ export default function TranslationOutput({ value }) {
           {value || 'Translation appears here'}
         </Text>
       </View>
-      {value && (
-        <Pressable style={styles.copyButton} onPress={handleCopy}>
-          <Text style={styles.copyIcon}>📋</Text>
-        </Pressable>
-      )}
     </View>
   );
 }
@@ -456,23 +1407,35 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: '#000',
   },
-  copyButton: {
-    position: 'absolute',
-    bottom: 8,
-    right: 8,
-    padding: 8,
-  },
-  copyIcon: {
-    fontSize: 20,
-  },
 });
 ```
-**Verification:** Displays text, copy button works
 
-### Task 13: Create TranslatorScreen (5 min)
-**File:** `/Users/joeradford/dev/spwrite-app/src/screens/TranslatorScreen.js`
-**Action:** Assemble all components into main screen
-**Code:**
+**Step 4: Run test to verify it passes**
+
+```bash
+npm test -- TranslationOutput.test.js
+```
+
+Expected: PASS (3 tests)
+
+**Step 5: Commit**
+
+```bash
+git add __tests__/components/TranslationOutput.test.js src/components/TranslationOutput.js
+git commit -m "feat: add TranslationOutput component"
+```
+
+---
+
+### Task 22: Create TranslatorScreen
+
+**Files:**
+- Create: `src/screens/TranslatorScreen.js`
+
+**Note:** TranslatorScreen is integration of components. Full TDD for screen components with state management can be complex. We'll create the screen using our tested components.
+
+**Step 1: Create TranslatorScreen**
+
 ```javascript
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
@@ -480,7 +1443,6 @@ import DirectionToggle from '../components/DirectionToggle';
 import TranslationInput from '../components/TranslationInput';
 import TranslationOutput from '../components/TranslationOutput';
 import translationService from '../services/TranslationService';
-import dictionaryService from '../services/DictionaryService';
 
 export default function TranslatorScreen() {
   const [direction, setDirection] = useState('to-speedwriting');
@@ -491,7 +1453,6 @@ export default function TranslatorScreen() {
     setDirection(prev =>
       prev === 'to-speedwriting' ? 'to-english' : 'to-speedwriting'
     );
-    // Clear output when direction changes
     setOutputText('');
   };
 
@@ -545,10 +1506,6 @@ export default function TranslatorScreen() {
         </Pressable>
 
         <TranslationOutput value={outputText} />
-
-        <Text style={styles.status}>
-          {dictionaryService.getWordCount()} words loaded • v{dictionaryService.getVersion()}
-        </Text>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -586,20 +1543,33 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '600',
   },
-  status: {
-    fontSize: 12,
-    color: '#8E8E93',
-    textAlign: 'center',
-    marginTop: 'auto',
-  },
 });
 ```
-**Verification:** Full translator interface displays and functions
 
-### Task 14: Update App.js (2 min)
-**File:** `/Users/joeradford/dev/spwrite-app/App.js`
-**Action:** Replace default content with TranslatorScreen
-**Code:**
+**Step 2: Verify no syntax errors**
+
+```bash
+node -c src/screens/TranslatorScreen.js
+```
+
+Expected: No output (success)
+
+**Step 3: Commit**
+
+```bash
+git add src/screens/TranslatorScreen.js
+git commit -m "feat: add TranslatorScreen with integrated components"
+```
+
+---
+
+### Task 23: Update App.js to use TranslatorScreen
+
+**Files:**
+- Modify: `App.js`
+
+**Step 1: Replace App.js content**
+
 ```javascript
 import React from 'react';
 import TranslatorScreen from './src/screens/TranslatorScreen';
@@ -608,109 +1578,83 @@ export default function App() {
   return <TranslatorScreen />;
 }
 ```
-**Verification:** App loads without errors
+
+**Step 2: Verify no syntax errors**
+
+```bash
+node -c App.js
+```
+
+Expected: No output (success)
+
+**Step 3: Commit**
+
+```bash
+git add App.js
+git commit -m "feat: update App.js to render TranslatorScreen"
+```
 
 ---
 
-## Phase 3: Testing & Polish (Week 3)
+### Task 24: Verify MVP works on device
 
-### Task 15: Test on iOS Device (5 min)
-**File:** N/A (testing)
-**Action:**
-1. Run `npx expo start`
-2. Scan QR code with iPhone Expo Go app
-3. Test translations:
-   - "I feel happy today" → "I fel hpy 2dy"
-   - "I fel hpy 2dy" → "I feel happy today"
-4. Test UI interactions (toggle, clear, copy)
-**Verification:** All features work on device
+**Files:** N/A
 
-### Task 16: Handle Edge Cases (5 min)
-**File:** `/Users/joeradford/dev/spwrite-app/src/services/TranslationService.js`
-**Action:** Improve handling of edge cases
-- Empty input
-- Whitespace-only input
-- Multiple spaces between words
-- Numbers and special characters
-**Verification:** Edge cases handled gracefully
+**Step 1: Start Expo development server**
 
-### Task 17: Add Error Boundary (optional) (5 min)
-**File:** `/Users/joeradford/dev/spwrite-app/src/components/ErrorBoundary.js`
-**Action:** Catch and display errors gracefully
-**Verification:** App doesn't crash on errors
+```bash
+npx expo start
+```
+
+Expected: QR code displays in terminal
+
+**Step 2: Test on device**
+
+1. Scan QR code with Expo Go app on iPhone
+2. App loads without errors
+3. Test translation: "I feel happy" → tap Translate → "I fel hpy"
+4. Toggle direction
+5. Test reverse: "I fel hpy" → tap Translate → "I feel happy"
+
+**Step 3: Stop server**
+
+Press Ctrl+C in terminal
 
 ---
 
-## Phase 4: Demo Preparation (Week 4)
+## Phase 3: Testing & Polish
 
-### Task 18: Create README (5 min)
-**File:** `/Users/joeradford/dev/spwrite-app/README.md`
-**Action:** Document project, how to run, demo instructions
-**Verification:** README is clear and complete
+**Note:** This phase needs to be fleshed out with proper TDD structure following the superpowers:writing-plans skill format. Tasks should include:
+- Edge case testing (empty input, special characters, numbers, punctuation)
+- Error boundary component
+- Performance testing
+- Accessibility testing
+- All following the 5-step TDD cycle where applicable
 
-### Task 19: Take Screenshots (3 min)
-**File:** N/A (assets)
-**Action:** Capture screenshots of app in use
-**Verification:** Screenshots saved for presentation
+---
 
-### Task 20: Prepare Demo Script (5 min)
-**File:** `/Users/joeradford/dev/spwrite-app/DEMO.md`
-**Action:** Write talking points and demo flow
-**Verification:** Script is ready to present
+## Phase 4: Demo Preparation
+
+**Note:** This phase needs to be fleshed out with proper task structure following the superpowers:writing-plans skill format. Tasks should include:
+- README documentation
+- Screenshots and demo assets
+- Presentation materials
+- All with exact commands and verification steps
 
 ---
 
 ## Success Criteria
 
 **MVP Complete When:**
-- ✅ App runs on iOS device via Expo Go
-- ✅ Can translate English → Speedwriting
-- ✅ Can translate Speedwriting → English
-- ✅ 100-word dictionary loaded
-- ✅ UI matches mockup design
-- ✅ Copy to clipboard works
-- ✅ No crashes during normal use
+- All Phase 0, 1, 2 tests pass
+- App runs on iOS device via Expo Go
+- Can translate English → Speedwriting
+- Can translate Speedwriting → English
+- 87-word dictionary loaded
+- UI matches mockup design
+- No crashes during normal use
 
-**Demo Ready When:**
-- ✅ Can demonstrate live translation
-- ✅ Screenshots/recordings available
-- ✅ Can explain AI-assisted development process
-- ✅ Can discuss data-driven architecture
-
----
-
-## Risk Mitigation
-
-**Risk 1:** Expo setup issues on Mac
-- **Mitigation:** Follow official Expo docs, use npx instead of global install
-
-**Risk 2:** Dictionary translations are incorrect
-- **Mitigation:** Start with small set of verified words, expand carefully
-
-**Risk 3:** UI looks bad on different screen sizes
-- **Mitigation:** Test on multiple devices, use relative sizing
-
-**Risk 4:** Running out of time before demo
-- **Mitigation:** Focus on core translator only, skip polish if needed
-
----
-
-## Future Work (Post-Demo)
-
-- Live translation (as-you-type)
-- Rules reference tab
-- Settings tab
-- Dark mode support
-- Multi-system support (other speedwriting systems)
-- User custom words
-- Export to GitHub as open source
-- Publish to App Store/Play Store
-
----
-
-## Time Estimate
-
-**Total implementation time:** 12-15 hours over 3 weeks
-**Buffer time:** 1 week for testing and polish
-
-**This plan is realistic for a 4-week hobby project timeline.**
+**Ready for Phase 3 When:**
+- All Phase 2 tasks complete
+- All tests passing
+- Manual device testing successful
