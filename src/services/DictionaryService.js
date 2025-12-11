@@ -28,6 +28,11 @@ class DictionaryService {
     const word = speedwritingWord.toLowerCase();
     return this.reverseIndex[word] || speedwritingWord;
   }
+
+  translateToSpeedwriting(word) {
+    const cleanWord = word.toLowerCase();
+    return this.data.words[cleanWord] || word;
+  }
 }
 
 const dictionaryService = new DictionaryService();
