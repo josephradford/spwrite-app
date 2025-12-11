@@ -3,6 +3,16 @@ import dictionaryData from '../../data/dictionary.json';
 class DictionaryService {
   constructor() {
     this.data = dictionaryData;
+    this.reverseIndex = this.buildReverseIndex();
+  }
+
+  buildReverseIndex() {
+    const reverse = {};
+    for (let [english, speedwriting] of Object.entries(this.data.words)) {
+      const key = speedwriting.toLowerCase();
+      reverse[key] = english;
+    }
+    return reverse;
   }
 
   getWordCount() {

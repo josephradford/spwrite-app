@@ -29,4 +29,16 @@ describe('DictionaryService', () => {
       expect(dictionaryService.translateToSpeedwriting('HAPPY')).toBe('hpy');
     });
   });
+
+  describe('buildReverseIndex', () => {
+    test('creates reverse index on construction', () => {
+      expect(dictionaryService.reverseIndex).toBeDefined();
+      expect(typeof dictionaryService.reverseIndex).toBe('object');
+    });
+
+    test('reverse index maps speedwriting to English', () => {
+      expect(dictionaryService.reverseIndex['hpy']).toBe('happy');
+      expect(dictionaryService.reverseIndex['sd']).toBe('sad');
+    });
+  });
 });
