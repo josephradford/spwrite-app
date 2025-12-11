@@ -3,35 +3,43 @@ import dictionaryData from '../../data/dictionary.json';
 class DictionaryService {
   constructor() {
     this.data = dictionaryData;
-    this.reverseIndex = this.buildReverseIndex();
+    this.reverseIndex = null;
   }
 
-  buildReverseIndex() {
-    const reverseIndex = {};
-    for (const [english, speedwriting] of Object.entries(this.data.words)) {
+  // Build reverse index for speedwriting -> English lookups
+  _buildReverseIndex() {
+    if (this.reverseIndex) return;
+
+    this.reverseIndex = {};
+    Object.entries(this.data.words).forEach(([english, speedwriting]) => {
       const lowerSpeedwriting = speedwriting.toLowerCase();
-      reverseIndex[lowerSpeedwriting] = english;
-    }
-    return reverseIndex;
+      if (!this.reverseIndex[lowerSpeedwriting]) {
+        this.reverseIndex[lowerSpeedwriting] = [];
+      }
+      this.reverseIndex[lowerSpeedwriting].push(english);
+    });
   }
 
   getWordCount() {
     return Object.keys(this.data.words).length;
   }
 
-  translateToSpeedwriting(englishWord) {
-    const word = englishWord.toLowerCase();
-    return this.data.words[word] || englishWord;
-  }
-
-  translateToEnglish(speedwritingWord) {
-    const word = speedwritingWord.toLowerCase();
-    return this.reverseIndex[word] || speedwritingWord;
-  }
-
   translateToSpeedwriting(word) {
-    const cleanWord = word.toLowerCase();
-    return this.data.words[cleanWord] || word;
+    const lowerWord = word.toLowerCase();
+    return this.data.words[lowerWord] || word;
+  }
+
+  translateToEnglish(word) {
+    this._buildReverseIndex();
+    const lowerWord = word.toLowerCase();
+    const matches = this.reverseIndex[lowerWord];
+
+    if (!matches || matches.length === 0) {
+      return word; // Unknown word, return as-is
+    }
+
+    // Return first match (handle ambiguity later in Phase 2)
+    return matches[0];
   }
 }
 
