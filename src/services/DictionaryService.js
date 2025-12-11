@@ -8,6 +8,11 @@ class DictionaryService {
   getWordCount() {
     return Object.keys(this.data.words).length;
   }
+
+  translateToSpeedwriting(englishWord) {
+    const word = englishWord.toLowerCase();
+    return this.data.words[word] || englishWord;
+  }
 }
 
 const dictionaryService = new DictionaryService();

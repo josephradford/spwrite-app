@@ -13,4 +13,20 @@ describe('DictionaryService', () => {
       expect(dictionaryService.getWordCount()).toBe(100);
     });
   });
+
+  describe('translateToSpeedwriting', () => {
+    test('translates known English word to speedwriting', () => {
+      expect(dictionaryService.translateToSpeedwriting('happy')).toBe('hpy');
+      expect(dictionaryService.translateToSpeedwriting('sad')).toBe('sd');
+    });
+
+    test('returns unknown word unchanged', () => {
+      expect(dictionaryService.translateToSpeedwriting('unknown')).toBe('unknown');
+    });
+
+    test('handles case-insensitive lookup', () => {
+      expect(dictionaryService.translateToSpeedwriting('Happy')).toBe('hpy');
+      expect(dictionaryService.translateToSpeedwriting('HAPPY')).toBe('hpy');
+    });
+  });
 });
