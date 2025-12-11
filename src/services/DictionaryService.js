@@ -4,6 +4,10 @@ class DictionaryService {
   constructor() {
     this.data = dictionaryData;
   }
+
+  getWordCount() {
+    return Object.keys(this.data.words).length;
+  }
 }
 
 const dictionaryService = new DictionaryService();
