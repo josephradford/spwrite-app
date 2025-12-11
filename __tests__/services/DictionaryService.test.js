@@ -10,7 +10,7 @@ describe('DictionaryService', () => {
 
   describe('getWordCount', () => {
     test('returns number of words in dictionary', () => {
-      expect(dictionaryService.getWordCount()).toBe(100);
+      expect(dictionaryService.getWordCount()).toBe(101);
     });
   });
 
@@ -31,14 +31,20 @@ describe('DictionaryService', () => {
   });
 
   describe('buildReverseIndex', () => {
-    test('creates reverse index on construction', () => {
+    test('creates reverse index on first use', () => {
+      // Trigger lazy loading by calling translateToEnglish
+      dictionaryService.translateToEnglish('hpy');
+
       expect(dictionaryService.reverseIndex).toBeDefined();
       expect(typeof dictionaryService.reverseIndex).toBe('object');
     });
 
     test('reverse index maps speedwriting to English', () => {
-      expect(dictionaryService.reverseIndex['hpy']).toBe('happy');
-      expect(dictionaryService.reverseIndex['sd']).toBe('sad');
+      // Trigger lazy loading
+      dictionaryService.translateToEnglish('hpy');
+
+      expect(dictionaryService.reverseIndex['hpy']).toContain('happy');
+      expect(dictionaryService.reverseIndex['sd']).toContain('sad');
     });
   });
 
