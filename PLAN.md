@@ -698,7 +698,7 @@ git commit -m "feat: add translateToSpeedwriting to DictionaryService"
 
 ---
 
-### Task 12: Test - DictionaryService builds reverse index
+### Task 12: Test - DictionaryService builds reverse index ✅ (30bbb8b)
 
 **Files:**
 - Modify: `__tests__/services/DictionaryService.test.js`
