@@ -7,12 +7,12 @@ class DictionaryService {
   }
 
   buildReverseIndex() {
-    const reverse = {};
-    for (let [english, speedwriting] of Object.entries(this.data.words)) {
-      const key = speedwriting.toLowerCase();
-      reverse[key] = english;
+    const reverseIndex = {};
+    for (const [english, speedwriting] of Object.entries(this.data.words)) {
+      const lowerSpeedwriting = speedwriting.toLowerCase();
+      reverseIndex[lowerSpeedwriting] = english;
     }
-    return reverse;
+    return reverseIndex;
   }
 
   getWordCount() {
@@ -22,6 +22,11 @@ class DictionaryService {
   translateToSpeedwriting(englishWord) {
     const word = englishWord.toLowerCase();
     return this.data.words[word] || englishWord;
+  }
+
+  translateToEnglish(speedwritingWord) {
+    const word = speedwritingWord.toLowerCase();
+    return this.reverseIndex[word] || speedwritingWord;
   }
 }
 

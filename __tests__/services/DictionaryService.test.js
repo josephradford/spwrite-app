@@ -41,4 +41,20 @@ describe('DictionaryService', () => {
       expect(dictionaryService.reverseIndex['sd']).toBe('sad');
     });
   });
+
+  describe('translateToEnglish', () => {
+    test('translates known speedwriting to English', () => {
+      expect(dictionaryService.translateToEnglish('hpy')).toBe('happy');
+      expect(dictionaryService.translateToEnglish('sd')).toBe('sad');
+    });
+
+    test('returns unknown speedwriting unchanged', () => {
+      expect(dictionaryService.translateToEnglish('xyz')).toBe('xyz');
+    });
+
+    test('handles case-insensitive lookup', () => {
+      expect(dictionaryService.translateToEnglish('HPY')).toBe('happy');
+      expect(dictionaryService.translateToEnglish('Hpy')).toBe('happy');
+    });
+  });
 });
