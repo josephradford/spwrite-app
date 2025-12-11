@@ -1,4 +1,4 @@
-const dictionaryData = require('../../data/dictionary.json');
+import dictionaryData from '../../data/dictionary.json';
 
 class DictionaryService {
   constructor() {
@@ -8,4 +8,4 @@ class DictionaryService {
 
 const dictionaryService = new DictionaryService();
 
-module.exports = dictionaryService;
+export default dictionaryService;
