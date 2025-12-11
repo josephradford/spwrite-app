@@ -12,4 +12,14 @@ describe('TranslationService', () => {
       expect(translationService.translatePhrase('  \t  ', 'to-english')).toBe('');
     });
   });
+
+  describe('to-speedwriting direction', () => {
+    test('translates single word', () => {
+      expect(translationService.translatePhrase('happy', 'to-speedwriting')).toBe('hpy');
+    });
+
+    test('translates unknown word unchanged', () => {
+      expect(translationService.translatePhrase('unknown', 'to-speedwriting')).toBe('unknown');
+    });
+  });
 });
