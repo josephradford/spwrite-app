@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 import DirectionToggle from '../../src/components/DirectionToggle';
 
 describe('DirectionToggle', () => {
@@ -15,5 +15,15 @@ describe('DirectionToggle', () => {
       <DirectionToggle direction="to-english" onToggle={() => {}} />
     );
     expect(getByText('Speedwriting → English')).toBeTruthy();
+  });
+
+  test('calls onToggle when pressed', () => {
+    const mockToggle = jest.fn();
+    const { getByText } = render(
+      <DirectionToggle direction="to-speedwriting" onToggle={mockToggle} />
+    );
+
+    fireEvent.press(getByText('English → Speedwriting'));
+    expect(mockToggle).toHaveBeenCalledTimes(1);
   });
 });
