@@ -1833,7 +1833,32 @@ Press Ctrl+C in terminal
 
 ## Phase 3: Testing & Polish
 
-**Note:** This phase needs to be fleshed out with proper TDD structure following the superpowers:writing-plans skill format. Tasks should include:
+### Task 27: Add keyboard dismiss functionality
+
+**Files:**
+- Modify: `src/components/TranslationInput.js`
+- Modify: `src/screens/TranslatorScreen.js`
+
+**Issue:** Keyboard stays visible after typing, reducing screen space for viewing output. No way to dismiss keyboard except system gestures.
+
+**Proposed Solutions:**
+1. Tap outside input area to dismiss keyboard
+2. Auto-dismiss when Translate button pressed
+3. Add "Done" button on keyboard
+
+**Implementation:**
+- Use `Keyboard.dismiss()` from `react-native`
+- Wrap screen in `TouchableWithoutFeedback` for tap-to-dismiss
+- Auto-dismiss on translate button press
+- Configure TextInput with `returnKeyType="done"` and `blurOnSubmit`
+
+**Discovered:** Task 26 manual device testing (2026-01-03)
+
+---
+
+### Future Tasks (To Be Detailed)
+
+**Note:** These tasks need to be fleshed out with proper TDD structure following the superpowers:writing-plans skill format:
 - Edge case testing (empty input, special characters, numbers, punctuation)
 - Error boundary component
 - Performance testing
