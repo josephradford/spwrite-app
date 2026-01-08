@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import DirectionToggle from '../components/DirectionToggle';
 import TranslationInput from '../components/TranslationInput';
 import TranslationOutput from '../components/TranslationOutput';
@@ -62,29 +62,35 @@ export default function TranslatorScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.content}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.inner}>
-            <View style={styles.header}>
-              <Text style={styles.title}>SPWrite</Text>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.inner}>
+              <View style={styles.header}>
+                <Text style={styles.title}>SPWrite</Text>
+              </View>
+
+              <DirectionToggle
+                direction={direction}
+                onToggle={handleToggleDirection}
+              />
+
+              <TranslationInput
+                value={inputText}
+                onChangeText={setInputText}
+                placeholder={placeholder}
+                onClear={handleClear}
+                enableAutocorrect={direction === 'to-speedwriting'}
+                maxLength={MAX_CHARACTERS}
+              />
+
+              <TranslationOutput value={outputText} />
             </View>
-
-            <DirectionToggle
-              direction={direction}
-              onToggle={handleToggleDirection}
-            />
-
-            <TranslationInput
-              value={inputText}
-              onChangeText={setInputText}
-              placeholder={placeholder}
-              onClear={handleClear}
-              enableAutocorrect={direction === 'to-speedwriting'}
-              maxLength={MAX_CHARACTERS}
-            />
-
-            <TranslationOutput value={outputText} />
-          </View>
-        </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -97,10 +103,15 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
     padding: 16,
   },
   inner: {
-    flex: 1,
+    // Removed flex: 1 to allow natural sizing
   },
   header: {
     alignItems: 'center',
