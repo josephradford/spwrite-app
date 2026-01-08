@@ -65,4 +65,32 @@ describe('TranslationInput', () => {
     fireEvent.press(getByText('×'));
     expect(mockClear).toHaveBeenCalledTimes(1);
   });
+
+  describe('keyboard dismiss functionality', () => {
+    test('TextInput has returnKeyType="done"', () => {
+      const { getByPlaceholderText } = render(
+        <TranslationInput
+          value=""
+          onChangeText={() => {}}
+          placeholder="Type here..."
+          onClear={() => {}}
+        />
+      );
+      const textInput = getByPlaceholderText('Type here...');
+      expect(textInput.props.returnKeyType).toBe('done');
+    });
+
+    test('TextInput has blurOnSubmit enabled', () => {
+      const { getByPlaceholderText } = render(
+        <TranslationInput
+          value=""
+          onChangeText={() => {}}
+          placeholder="Type here..."
+          onClear={() => {}}
+        />
+      );
+      const textInput = getByPlaceholderText('Type here...');
+      expect(textInput.props.blurOnSubmit).toBe(true);
+    });
+  });
 });

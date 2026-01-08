@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Pressable, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import DirectionToggle from '../components/DirectionToggle';
 import TranslationInput from '../components/TranslationInput';
 import TranslationOutput from '../components/TranslationOutput';
@@ -18,6 +18,8 @@ export default function TranslatorScreen() {
   };
 
   const handleTranslate = () => {
+    Keyboard.dismiss();
+
     if (!inputText.trim()) {
       setOutputText('');
       return;
@@ -42,31 +44,35 @@ export default function TranslatorScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.content}
       >
-        <View style={styles.header}>
-          <Text style={styles.title}>SPWrite</Text>
-        </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.inner}>
+            <View style={styles.header}>
+              <Text style={styles.title}>SPWrite</Text>
+            </View>
 
-        <DirectionToggle
-          direction={direction}
-          onToggle={handleToggleDirection}
-        />
+            <DirectionToggle
+              direction={direction}
+              onToggle={handleToggleDirection}
+            />
 
-        <TranslationInput
-          value={inputText}
-          onChangeText={setInputText}
-          placeholder={placeholder}
-          onClear={handleClear}
-        />
+            <TranslationInput
+              value={inputText}
+              onChangeText={setInputText}
+              placeholder={placeholder}
+              onClear={handleClear}
+            />
 
-        <Pressable
-          style={[styles.translateButton, !inputText.trim() && styles.buttonDisabled]}
-          onPress={handleTranslate}
-          disabled={!inputText.trim()}
-        >
-          <Text style={styles.translateButtonText}>Translate</Text>
-        </Pressable>
+            <Pressable
+              style={[styles.translateButton, !inputText.trim() && styles.buttonDisabled]}
+              onPress={handleTranslate}
+              disabled={!inputText.trim()}
+            >
+              <Text style={styles.translateButtonText}>Translate</Text>
+            </Pressable>
 
-        <TranslationOutput value={outputText} />
+            <TranslationOutput value={outputText} />
+          </View>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -80,6 +86,9 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 16,
+  },
+  inner: {
+    flex: 1,
   },
   header: {
     alignItems: 'center',
