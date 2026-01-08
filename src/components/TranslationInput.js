@@ -12,6 +12,8 @@ export default function TranslationInput({ value, onChangeText, placeholder, onC
         multiline
         autoCapitalize="none"
         autoCorrect={false}
+        returnKeyType="done"
+        blurOnSubmit={true}
       />
       {value.length > 0 && (
         <Pressable style={styles.clearButton} onPress={onClear}>
