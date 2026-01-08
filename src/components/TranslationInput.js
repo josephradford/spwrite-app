@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TextInput, Pressable, Text, StyleSheet } from 'react-native';
 
-export default function TranslationInput({ value, onChangeText, placeholder, onClear }) {
+export default function TranslationInput({ value, onChangeText, placeholder, onClear, enableAutocorrect = false }) {
   return (
     <View style={styles.container}>
       <TextInput
@@ -10,8 +10,8 @@ export default function TranslationInput({ value, onChangeText, placeholder, onC
         onChangeText={onChangeText}
         placeholder={placeholder}
         multiline
-        autoCapitalize="none"
-        autoCorrect={false}
+        autoCapitalize={enableAutocorrect ? "sentences" : "none"}
+        autoCorrect={enableAutocorrect}
         returnKeyType="done"
         blurOnSubmit={true}
       />

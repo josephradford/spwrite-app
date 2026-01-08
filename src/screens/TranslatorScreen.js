@@ -60,6 +60,7 @@ export default function TranslatorScreen() {
               onChangeText={setInputText}
               placeholder={placeholder}
               onClear={handleClear}
+              enableAutocorrect={direction === 'to-speedwriting'}
             />
 
             <Pressable
