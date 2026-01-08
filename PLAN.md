@@ -95,24 +95,46 @@
 - Can test offline, persists between sessions
 - Still supports hot reloading when dev server running
 
-**Requirements:**
-- iOS device or simulator
-- Xcode installed and configured
-- Apple Developer account (for physical device)
+**Target Device:**
+- Joe's iPhone 15 running iOS 18.7.2
+- Project deployment target: iOS 15.1+
+- Building with Xcode 26.2 / iOS SDK 26.2
 
-**Implementation Steps (To Be Detailed):**
-1. Install iOS dependencies and configure Xcode
-2. Generate native iOS project
-3. Build and install on device/simulator
-4. Test offline functionality
-5. Document build process
+**Progress:**
 
-**Research:**
+✅ **Completed Steps:**
+1. Installed `expo-dev-client` (required for development builds)
+2. Generated native iOS project with `npx expo prebuild --platform ios`
+3. Created `ios/` folder with SPWrite.xcworkspace
+4. Identified target device: iPhone 15 (ID: DEVICE_ID_PLACEHOLDER)
+
+🚧 **Current Blocker:**
+
+**Issue:** Xcode cannot find iOS 26.2 platform for building
+**Error:** `iOS 26.2 is not installed. Please download and install the platform from Xcode > Settings > Components.`
+
+This affects both simulators and physical devices. The iOS SDK 26.2 can build apps targeting iOS 15.1+ (will run on iPhone 15's iOS 18.7.2), but Xcode needs the iOS 26.2 platform components installed first.
+
+**Fix Required (Manual Step):**
+1. Open Xcode application
+2. Go to **Xcode > Settings > Components** (or Preferences > Components)
+3. Find **iOS 26.2** platform in the list
+4. Click **"Get"** button to download and install
+5. May need to restart computer after installation
+6. Then retry: `npx expo run:ios --device "DEVICE_ID_PLACEHOLDER"`
+
+**References:**
 - [Expo Development Builds Documentation](https://docs.expo.dev/develop/development-builds/introduction/)
-- Difference between Expo Go vs Development Build
-- Required dependencies and configuration
+- [Downloading and installing additional Xcode components](https://developer.apple.com/documentation/xcode/downloading-and-installing-additional-xcode-components)
+- Known issue: [macOS 15 / Xcode 26.1: iOS platform not installed](https://github.com/actions/runner-images/issues/13275)
 
-**Status:** Not Started
+**Next Steps After Platform Install:**
+1. Build and install on iPhone 15: `npx expo run:ios --device "DEVICE_ID_PLACEHOLDER"`
+2. Test offline functionality (disconnect from dev machine)
+3. Verify app persists and works without connection
+4. Document final build process
+
+**Status:** Blocked - Awaiting manual iOS 26.2 platform installation via Xcode GUI
 
 ---
 
