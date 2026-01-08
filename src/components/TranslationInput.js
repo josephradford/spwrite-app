@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, TextInput, Pressable, Text, StyleSheet } from 'react-native';
+import CharacterCounter from './CharacterCounter';
 
-export default function TranslationInput({ value, onChangeText, placeholder, onClear, enableAutocorrect = false }) {
+export default function TranslationInput({ value, onChangeText, placeholder, onClear, enableAutocorrect = false, maxLength }) {
   return (
     <View style={styles.container}>
       <TextInput
@@ -14,11 +15,15 @@ export default function TranslationInput({ value, onChangeText, placeholder, onC
         autoCorrect={enableAutocorrect}
         returnKeyType="done"
         blurOnSubmit={true}
+        maxLength={maxLength}
       />
       {value.length > 0 && (
         <Pressable style={styles.clearButton} onPress={onClear}>
           <Text style={styles.clearText}>×</Text>
         </Pressable>
+      )}
+      {maxLength && (
+        <CharacterCounter current={value.length} max={maxLength} />
       )}
     </View>
   );
@@ -35,6 +40,7 @@ const styles = StyleSheet.create({
     padding: 16,
     fontSize: 17,
     minHeight: 120,
+    maxHeight: 200,
     textAlignVertical: 'top',
   },
   clearButton: {

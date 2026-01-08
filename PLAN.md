@@ -65,13 +65,20 @@
 
 ---
 
-### Phase 3: Testing & Polish (Task 27)
-**Status:** In Progress
+### Phase 3: Testing & Polish (Tasks 27-28)
+**Status:** Complete
 
 - Task 27: Add keyboard dismiss functionality ✅ (501c8d5)
   - Keyboard dismisses on "Done" button press
   - Auto-dismiss when Translate button pressed
   - Tap outside input area to dismiss keyboard
+
+- Task 28: Real-time translation with character limits ✅ (684730e, 4a71dab, 4adc9c5)
+  - CharacterCounter component with color-coded warnings
+  - 5,000 character limit (matches Google Translate)
+  - Real-time translation with 300ms debouncing
+  - Removed Translate button
+  - All 44 tests passing
 
 ---
 
@@ -81,8 +88,6 @@
 
 **Note:** These tasks need to be fleshed out with proper TDD structure following the superpowers:writing-plans skill format:
 
-- Edge case testing (empty input, special characters, numbers, punctuation)
-- Error boundary component
 - Performance testing
 - Accessibility testing
 - All following the 5-step TDD cycle where applicable
@@ -103,19 +108,21 @@
 ## Success Criteria
 
 **MVP Complete When:**
-- ✅ All Phase 0, 1, 2 tests pass (34/34 passing)
+- ✅ All Phase 0, 1, 2, 3 tests pass (44/44 passing)
 - ✅ App runs on iOS device via Expo Go
 - ✅ Can translate English → Speedwriting
 - ✅ Can translate Speedwriting → English
-- ✅ 100-word dictionary loaded
+- ✅ 196-word dictionary loaded (expanded from 100)
 - ✅ UI matches mockup design
 - ✅ No crashes during normal use
 - ✅ Keyboard dismisses properly
+- ✅ Real-time translation with debouncing
+- ✅ 5,000 character limit with visual counter
 
-**Current Status:** MVP Complete! 🎉
+**Current Status:** MVP Complete! Phase 3 Complete! 🎉
 
 **Next Steps:**
-- Define and implement Phase 3 future tasks
+- Manual device testing for Task 28
 - Plan Phase 4 demo preparation
 
 ---
