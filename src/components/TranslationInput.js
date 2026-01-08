@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     padding: 16,
     fontSize: 17,
     minHeight: 120,
+    maxHeight: 200,
     textAlignVertical: 'top',
   },
   clearButton: {
