@@ -1,32 +1,50 @@
-import React, { useState } from 'react';
-import { View, Text, Pressable, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import DirectionToggle from '../components/DirectionToggle';
 import TranslationInput from '../components/TranslationInput';
 import TranslationOutput from '../components/TranslationOutput';
 import translationService from '../services/TranslationService';
 
+const DEBOUNCE_DELAY = 300; // ms
+const MAX_CHARACTERS = 5000;
+
 export default function TranslatorScreen() {
   const [direction, setDirection] = useState('to-speedwriting');
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
+  const debounceTimer = useRef(null);
+
+  // Real-time translation with debouncing
+  useEffect(() => {
+    // Clear existing timer
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    // Set new timer
+    debounceTimer.current = setTimeout(() => {
+      if (!inputText.trim()) {
+        setOutputText('');
+        return;
+      }
+
+      const result = translationService.translatePhrase(inputText, direction);
+      setOutputText(result);
+    }, DEBOUNCE_DELAY);
+
+    // Cleanup on unmount
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
+  }, [inputText, direction]);
 
   const handleToggleDirection = () => {
     setDirection(prev =>
       prev === 'to-speedwriting' ? 'to-english' : 'to-speedwriting'
     );
     setOutputText('');
-  };
-
-  const handleTranslate = () => {
-    Keyboard.dismiss();
-
-    if (!inputText.trim()) {
-      setOutputText('');
-      return;
-    }
-
-    const result = translationService.translatePhrase(inputText, direction);
-    setOutputText(result);
   };
 
   const handleClear = () => {
@@ -61,15 +79,8 @@ export default function TranslatorScreen() {
               placeholder={placeholder}
               onClear={handleClear}
               enableAutocorrect={direction === 'to-speedwriting'}
+              maxLength={MAX_CHARACTERS}
             />
-
-            <Pressable
-              style={[styles.translateButton, !inputText.trim() && styles.buttonDisabled]}
-              onPress={handleTranslate}
-              disabled={!inputText.trim()}
-            >
-              <Text style={styles.translateButtonText}>Translate</Text>
-            </Pressable>
 
             <TranslationOutput value={outputText} />
           </View>
@@ -98,20 +109,5 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-  },
-  translateButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  buttonDisabled: {
-    backgroundColor: '#C7C7CC',
-  },
-  translateButtonText: {
-    color: '#FFFFFF',
-    fontSize: 17,
-    fontWeight: '600',
   },
 });
