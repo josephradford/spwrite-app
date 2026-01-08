@@ -84,6 +84,38 @@
 
 ## 🚧 Active Work
 
+### Task 29: Create Development Build for Offline Testing
+
+**Goal:** Create a standalone development build using `expo run:ios` that works offline without Expo Go
+
+**Motivation:**
+- Expo Go requires staying connected to dev machine
+- Expo Go requires same WiFi network
+- Development build installs as real app on device
+- Can test offline, persists between sessions
+- Still supports hot reloading when dev server running
+
+**Requirements:**
+- iOS device or simulator
+- Xcode installed and configured
+- Apple Developer account (for physical device)
+
+**Implementation Steps (To Be Detailed):**
+1. Install iOS dependencies and configure Xcode
+2. Generate native iOS project
+3. Build and install on device/simulator
+4. Test offline functionality
+5. Document build process
+
+**Research:**
+- [Expo Development Builds Documentation](https://docs.expo.dev/develop/development-builds/introduction/)
+- Difference between Expo Go vs Development Build
+- Required dependencies and configuration
+
+**Status:** Not Started
+
+---
+
 ### Future Tasks (To Be Detailed)
 
 **Note:** These tasks need to be fleshed out with proper TDD structure following the superpowers:writing-plans skill format:
