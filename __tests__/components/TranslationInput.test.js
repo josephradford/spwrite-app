@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import TranslationInput from '../../src/components/TranslationInput';
+import CharacterCounter from '../../src/components/CharacterCounter';
 
 describe('TranslationInput', () => {
   test('renders TextInput with placeholder', () => {
@@ -91,6 +92,50 @@ describe('TranslationInput', () => {
       );
       const textInput = getByPlaceholderText('Type here...');
       expect(textInput.props.blurOnSubmit).toBe(true);
+    });
+  });
+
+  describe('character limit functionality', () => {
+    test('shows character counter when maxLength provided', () => {
+      const { UNSAFE_getByType } = render(
+        <TranslationInput
+          value="hello"
+          onChangeText={() => {}}
+          placeholder="Type here..."
+          onClear={() => {}}
+          maxLength={5000}
+        />
+      );
+      expect(UNSAFE_getByType(CharacterCounter)).toBeTruthy();
+    });
+
+    test('does not show character counter when maxLength not provided', () => {
+      const { UNSAFE_queryByType } = render(
+        <TranslationInput
+          value="hello"
+          onChangeText={() => {}}
+          placeholder="Type here..."
+          onClear={() => {}}
+        />
+      );
+      expect(UNSAFE_queryByType(CharacterCounter)).toBeNull();
+    });
+
+    test('prevents typing beyond maxLength', () => {
+      const mockChange = jest.fn();
+      const longText = 'a'.repeat(5000);
+      const { getByPlaceholderText } = render(
+        <TranslationInput
+          value={longText}
+          onChangeText={mockChange}
+          placeholder="Type here..."
+          onClear={() => {}}
+          maxLength={5000}
+        />
+      );
+
+      const input = getByPlaceholderText('Type here...');
+      expect(input.props.maxLength).toBe(5000);
     });
   });
 });
