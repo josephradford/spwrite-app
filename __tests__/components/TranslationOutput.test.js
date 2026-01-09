@@ -17,4 +17,10 @@ describe('TranslationOutput', () => {
     const { getByText } = render(<TranslationOutput value={null} />);
     expect(getByText('Translation appears here')).toBeTruthy();
   });
+
+  test('output text is selectable', () => {
+    const { getByText } = render(<TranslationOutput value="test text" />);
+    const textElement = getByText('test text');
+    expect(textElement.props.selectable).toBe(true);
+  });
 });

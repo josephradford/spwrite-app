@@ -5,7 +5,7 @@ export default function TranslationOutput({ value }) {
   return (
     <View style={styles.container}>
       <View style={styles.output}>
-        <Text style={styles.text}>
+        <Text style={styles.text} selectable={true}>
           {value || 'Translation appears here'}
         </Text>
       </View>
