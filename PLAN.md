@@ -84,6 +84,14 @@
 
 ## 🚧 Active Work
 
+### ✅ Task 29: Native iOS Build Setup (Complete)
+
+- Set up native iOS build infrastructure
+- Created release build for offline use on iPhone 15
+- See [README.md](./README.md#building-for-ios-device) for build instructions
+
+---
+
 ### Future Tasks (To Be Detailed)
 
 **Note:** These tasks need to be fleshed out with proper TDD structure following the superpowers:writing-plans skill format:
