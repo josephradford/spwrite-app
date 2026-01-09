@@ -83,7 +83,7 @@ To build and install the app on a physical iOS device (e.g., for offline use):
 xcrun devicectl list devices
 ```
 
-Look for your device's identifier (e.g., `DEVICE_ID_PLACEHOLDER`).
+Look for your device's identifier in the output. It will look something like `12345678-90ABCDEF12345678`.
 
 ### Development Build (with Hot Reload)
 
