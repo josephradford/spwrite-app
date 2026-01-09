@@ -66,6 +66,82 @@ npm test
 
 **Note:** Currently no tests exist (Phase 0 complete, Phase 1+ in progress). Tests will be added using TDD approach.
 
+## Building for iOS Device
+
+To build and install the app on a physical iOS device (e.g., for offline use):
+
+### Prerequisites
+
+- Xcode 16.2+ installed
+- iOS device connected via USB
+- Developer Mode enabled on device (Settings > Privacy & Security > Developer Mode)
+- Apple Developer account configured in Xcode
+
+### Get Device ID
+
+```bash
+xcrun devicectl list devices
+```
+
+Look for your device's identifier (e.g., `DEVICE_ID_PLACEHOLDER`).
+
+### Development Build (with Hot Reload)
+
+Use this for active development with live code updates:
+
+```bash
+# 1. Start the dev server
+npx expo start --dev-client
+
+# 2. Build and install (replace DEVICE_ID with your device ID)
+xcodebuild -workspace ios/SPWrite.xcworkspace \
+  -scheme SPWrite \
+  -configuration Debug \
+  -destination id=DEVICE_ID \
+  -allowProvisioningUpdates
+
+# 3. Install to device
+xcrun devicectl device install app \
+  --device DEVICE_ID \
+  /Users/$USER/Library/Developer/Xcode/DerivedData/SPWrite-*/Build/Products/Debug-iphoneos/SPWrite.app
+```
+
+**Note:** Development builds require the dev server to be running on your local network.
+
+### Release Build (Standalone/Offline)
+
+Use this for production testing or offline use without a dev server:
+
+```bash
+# 1. Build release version (replace DEVICE_ID with your device ID)
+xcodebuild -workspace ios/SPWrite.xcworkspace \
+  -scheme SPWrite \
+  -configuration Release \
+  -destination id=DEVICE_ID \
+  -allowProvisioningUpdates
+
+# 2. Install to device
+xcrun devicectl device install app \
+  --device DEVICE_ID \
+  /Users/$USER/Library/Developer/Xcode/DerivedData/SPWrite-*/Build/Products/Release-iphoneos/SPWrite.app
+```
+
+**Note:** Release builds bundle all JavaScript into the app binary and work completely offline.
+
+### Troubleshooting
+
+**"iOS platform not installed" error:**
+- Open Xcode > Settings > Components
+- Download and install the iOS platform matching your Xcode version
+
+**"Developer disk image could not be mounted":**
+- Enable Developer Mode on your iOS device
+- Wait for Xcode to copy symbol cache from device (happens automatically in Devices & Simulators window)
+
+**Code signing errors:**
+- Ensure automatic signing is enabled in Xcode project settings
+- Make sure your Apple ID is configured in Xcode > Settings > Accounts
+
 ## Project Structure
 
 ```

@@ -84,91 +84,11 @@
 
 ## 🚧 Active Work
 
-### Task 29: Native iOS Build Setup ✅
+### ✅ Task 29: Native iOS Build Setup (Complete)
 
-**Goal:** Set up native iOS build infrastructure and create production build for offline use
-
-**Motivation:**
-- Expo Go requires staying connected to dev machine
-- Need standalone app for offline journaling use
-- Support hot reloading during development when needed
-
-**Target Device:**
-- Joe's iPhone 15 running iOS 18.7.2
-- Project deployment target: iOS 15.1+
-- Building with Xcode 26.2 / iOS SDK 26.2
-
-**✅ Completed Steps:**
-
-1. **Setup Phase:**
-   - Installed `expo-dev-client` package
-   - Generated native iOS project: `npx expo prebuild --platform ios`
-   - Created `ios/` folder with SPWrite.xcworkspace
-   - Identified target device: iPhone 15 (ID: DEVICE_ID_PLACEHOLDER)
-
-2. **Build Environment Setup:**
-   - Installed iOS 26.2 platform via Xcode > Settings > Components
-   - Enabled Developer Mode on iPhone 15
-   - Copied device symbol cache to Mac (required for debugging)
-   - Configured automatic code signing with Apple Development certificate
-
-3. **Development Build (Debug Configuration):**
-   - Built successfully using: `xcodebuild -workspace ios/SPWrite.xcworkspace -scheme SPWrite -configuration Debug -destination id=DEVICE_ID_PLACEHOLDER -allowProvisioningUpdates`
-   - Installed to iPhone 15 successfully
-   - **Finding:** Development builds require dev server connection to load JavaScript
-
-4. **Release Build (Production Configuration):**
-   - Built successfully using: `xcodebuild -workspace ios/SPWrite.xcworkspace -scheme SPWrite -configuration Release -destination id=DEVICE_ID_PLACEHOLDER -allowProvisioningUpdates`
-   - JavaScript bundled directly into app binary
-   - Installed to iPhone 15 successfully
-   - **✅ Verified:** Works completely offline - no dev server required!
-
-**Key Learnings:**
-
-**Development Build vs Release Build:**
-- **Development Build (`-configuration Debug`):**
-  - Loads JavaScript from Metro bundler at runtime
-  - Requires dev server running on network
-  - Supports hot reloading and fast refresh
-  - Shows "no development servers found" when offline
-  - Use for: Active development with hot reload
-
-- **Release Build (`-configuration Release`):**
-  - JavaScript pre-bundled into app binary
-  - Works completely standalone/offline
-  - No dev server required
-  - No hot reloading capability
-  - Use for: Testing final app experience, offline use
-
-**Build Commands:**
-
-```bash
-# Development build (requires dev server)
-xcodebuild -workspace ios/SPWrite.xcworkspace \
-  -scheme SPWrite \
-  -configuration Debug \
-  -destination id=DEVICE_ID_PLACEHOLDER \
-  -allowProvisioningUpdates
-
-# Release build (standalone, offline)
-xcodebuild -workspace ios/SPWrite.xcworkspace \
-  -scheme SPWrite \
-  -configuration Release \
-  -destination id=DEVICE_ID_PLACEHOLDER \
-  -allowProvisioningUpdates
-
-# Install to device
-xcrun devicectl device install app \
-  --device DEVICE_ID_PLACEHOLDER \
-  /Users/joeradford/Library/Developer/Xcode/DerivedData/SPWrite-*/Build/Products/Release-iphoneos/SPWrite.app
-```
-
-**References:**
-- [Expo Development Builds Documentation](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Xcode Build Settings Reference](https://developer.apple.com/documentation/xcode/build-settings-reference)
-- Known issue: [iOS platform not installed in Xcode 26.x](https://github.com/actions/runner-images/issues/13275)
-
-**Status:** ✅ Complete - Release build installed and verified working offline on iPhone 15
+- Set up native iOS build infrastructure
+- Created release build for offline use on iPhone 15
+- See [README.md](./README.md#building-for-ios-device) for build instructions
 
 ---
 
