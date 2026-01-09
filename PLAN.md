@@ -84,57 +84,91 @@
 
 ## 🚧 Active Work
 
-### Task 29: Create Development Build for Offline Testing
+### Task 29: Native iOS Build Setup ✅
 
-**Goal:** Create a standalone development build using `expo run:ios` that works offline without Expo Go
+**Goal:** Set up native iOS build infrastructure and create production build for offline use
 
 **Motivation:**
 - Expo Go requires staying connected to dev machine
-- Expo Go requires same WiFi network
-- Development build installs as real app on device
-- Can test offline, persists between sessions
-- Still supports hot reloading when dev server running
+- Need standalone app for offline journaling use
+- Support hot reloading during development when needed
 
 **Target Device:**
 - Joe's iPhone 15 running iOS 18.7.2
 - Project deployment target: iOS 15.1+
 - Building with Xcode 26.2 / iOS SDK 26.2
 
-**Progress:**
+**✅ Completed Steps:**
 
-✅ **Completed Steps:**
-1. Installed `expo-dev-client` (required for development builds)
-2. Generated native iOS project with `npx expo prebuild --platform ios`
-3. Created `ios/` folder with SPWrite.xcworkspace
-4. Identified target device: iPhone 15 (ID: DEVICE_ID_PLACEHOLDER)
+1. **Setup Phase:**
+   - Installed `expo-dev-client` package
+   - Generated native iOS project: `npx expo prebuild --platform ios`
+   - Created `ios/` folder with SPWrite.xcworkspace
+   - Identified target device: iPhone 15 (ID: DEVICE_ID_PLACEHOLDER)
 
-🚧 **Current Blocker:**
+2. **Build Environment Setup:**
+   - Installed iOS 26.2 platform via Xcode > Settings > Components
+   - Enabled Developer Mode on iPhone 15
+   - Copied device symbol cache to Mac (required for debugging)
+   - Configured automatic code signing with Apple Development certificate
 
-**Issue:** Xcode cannot find iOS 26.2 platform for building
-**Error:** `iOS 26.2 is not installed. Please download and install the platform from Xcode > Settings > Components.`
+3. **Development Build (Debug Configuration):**
+   - Built successfully using: `xcodebuild -workspace ios/SPWrite.xcworkspace -scheme SPWrite -configuration Debug -destination id=DEVICE_ID_PLACEHOLDER -allowProvisioningUpdates`
+   - Installed to iPhone 15 successfully
+   - **Finding:** Development builds require dev server connection to load JavaScript
 
-This affects both simulators and physical devices. The iOS SDK 26.2 can build apps targeting iOS 15.1+ (will run on iPhone 15's iOS 18.7.2), but Xcode needs the iOS 26.2 platform components installed first.
+4. **Release Build (Production Configuration):**
+   - Built successfully using: `xcodebuild -workspace ios/SPWrite.xcworkspace -scheme SPWrite -configuration Release -destination id=DEVICE_ID_PLACEHOLDER -allowProvisioningUpdates`
+   - JavaScript bundled directly into app binary
+   - Installed to iPhone 15 successfully
+   - **✅ Verified:** Works completely offline - no dev server required!
 
-**Fix Required (Manual Step):**
-1. Open Xcode application
-2. Go to **Xcode > Settings > Components** (or Preferences > Components)
-3. Find **iOS 26.2** platform in the list
-4. Click **"Get"** button to download and install
-5. May need to restart computer after installation
-6. Then retry: `npx expo run:ios --device "DEVICE_ID_PLACEHOLDER"`
+**Key Learnings:**
+
+**Development Build vs Release Build:**
+- **Development Build (`-configuration Debug`):**
+  - Loads JavaScript from Metro bundler at runtime
+  - Requires dev server running on network
+  - Supports hot reloading and fast refresh
+  - Shows "no development servers found" when offline
+  - Use for: Active development with hot reload
+
+- **Release Build (`-configuration Release`):**
+  - JavaScript pre-bundled into app binary
+  - Works completely standalone/offline
+  - No dev server required
+  - No hot reloading capability
+  - Use for: Testing final app experience, offline use
+
+**Build Commands:**
+
+```bash
+# Development build (requires dev server)
+xcodebuild -workspace ios/SPWrite.xcworkspace \
+  -scheme SPWrite \
+  -configuration Debug \
+  -destination id=DEVICE_ID_PLACEHOLDER \
+  -allowProvisioningUpdates
+
+# Release build (standalone, offline)
+xcodebuild -workspace ios/SPWrite.xcworkspace \
+  -scheme SPWrite \
+  -configuration Release \
+  -destination id=DEVICE_ID_PLACEHOLDER \
+  -allowProvisioningUpdates
+
+# Install to device
+xcrun devicectl device install app \
+  --device DEVICE_ID_PLACEHOLDER \
+  /Users/joeradford/Library/Developer/Xcode/DerivedData/SPWrite-*/Build/Products/Release-iphoneos/SPWrite.app
+```
 
 **References:**
 - [Expo Development Builds Documentation](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Downloading and installing additional Xcode components](https://developer.apple.com/documentation/xcode/downloading-and-installing-additional-xcode-components)
-- Known issue: [macOS 15 / Xcode 26.1: iOS platform not installed](https://github.com/actions/runner-images/issues/13275)
+- [Xcode Build Settings Reference](https://developer.apple.com/documentation/xcode/build-settings-reference)
+- Known issue: [iOS platform not installed in Xcode 26.x](https://github.com/actions/runner-images/issues/13275)
 
-**Next Steps After Platform Install:**
-1. Build and install on iPhone 15: `npx expo run:ios --device "DEVICE_ID_PLACEHOLDER"`
-2. Test offline functionality (disconnect from dev machine)
-3. Verify app persists and works without connection
-4. Document final build process
-
-**Status:** Blocked - Awaiting manual iOS 26.2 platform installation via Xcode GUI
+**Status:** ✅ Complete - Release build installed and verified working offline on iPhone 15
 
 ---
 
