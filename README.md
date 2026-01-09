@@ -79,11 +79,20 @@ To build and install the app on a physical iOS device (e.g., for offline use):
 
 ### Get Device ID
 
+You need your device's UDID for xcodebuild. First, connect your device via USB, then run:
+
 ```bash
-xcrun devicectl list devices
+xcodebuild -workspace ios/SPWrite.xcworkspace -scheme SPWrite -showdestinations
 ```
 
-Look for your device's identifier in the output. It will look something like `12345678-90ABCDEF12345678`.
+Look for your device in the output under "Available destinations":
+```
+{ platform:iOS, arch:arm64, id:12345678-90ABCDEF12345678, name:Your Device Name }
+```
+
+Copy the `id` value (e.g., `12345678-90ABCDEF12345678`) - this is your DEVICE_ID to use in the commands below.
+
+**Note:** Don't use `xcrun devicectl list devices` - it returns a CoreDevice identifier that xcodebuild doesn't recognize. You need the UDID format shown above.
 
 ### Development Build (with Hot Reload)
 
